@@ -15,8 +15,11 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
+        System.out.println(login);
         User user = null;
         try {
             user = Authentication.login(login,password);
@@ -31,6 +34,6 @@ public class LoginServlet extends HttpServlet {
         }
         System.out.println( req.getSession().getId());
         req.getSession().setAttribute("user",user);
-        resp.sendRedirect(req.getContextPath()+"/index.jsp");
+        resp.sendRedirect(req.getContextPath()+"/");
     }
 }

@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"
          language="java"%>
 <html>
 <head>
@@ -38,6 +38,11 @@
           <div class="help-block with-errors"></div>
         </div>
         <div class="form-group">
+          <input type="number" class="form-control" name="phone" data-minlength="10" id="inputPhone" placeholder="Phone" data-error="Ви не правильно ввели номер телефону" required >
+          <i class="fa fa-phone"></i>
+          <div class="help-block with-errors"></div>
+        </div>
+        <div class="form-group">
           <div class="form-inline row">
             <div class="form-group col-sm-6">
               <input type="password" data-toggle="validator" data-minlength="6" class="form-control" data-error="Мінімум 6 елементів" id="inputPassword" placeholder="Ведіть пароль" name="password" required>
@@ -55,28 +60,8 @@
           <button type="submit" class="btn btn-default">Зареєстуватися</button>
         </div>
       </form>
-<%--<form action="registration" method="post">
-  <label>
-    <p>Login</p>
-    <input type="text" name="login">
-  </label>
-  <label>
-    <p>Name</p>
-    <input type="text" name="name">
-  </label>
-  <label>
-    <p>Second Name</p>
-    <input type="text" name="secondName">
-  </label>
-  <label>
-    <p>Password</p>
-    <input type="password" name="password">
-  </label>
-  <label>
-    <p>Email</p>
-    <input type="text" name="email">
-  </label>
-  <input type="submit">
-</form>--%>
+    </div>
+  </div>
+</div>
 </body>
 </html>

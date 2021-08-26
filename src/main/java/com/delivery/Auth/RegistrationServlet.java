@@ -28,10 +28,11 @@ public class RegistrationServlet extends HttpServlet {
         String secondName =req.getParameter("secondName");
         String password =req.getParameter("password");
         String email =req.getParameter("email");
+        String phone =req.getParameter("phone");
         System.out.println(name);
         User user;
         try {
-            user =Authentication.register(login,name,secondName,password,email);
+            user =Authentication.register(login,name,secondName,password,email,phone);
             req.getSession().setAttribute("user",user);
         } catch (SQLException throwables) {
             throwables.printStackTrace();

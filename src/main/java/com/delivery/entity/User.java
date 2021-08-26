@@ -10,19 +10,23 @@ public class User implements Serializable {
     private String secondName;
     private String password;
     private String email;
+    private String phone;
+    private String role;
 
     public User(int id,String login) {
         this.id=id;
         this.login = login;
     }
 
-    public User(int id, String login, String name, String secondName, String password, String email) {
+    public User(int id, String login, String name, String secondName, String password, String email, String phone, String role) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.secondName = secondName;
         this.password = password;
         this.email = email;
+        this.phone = phone;
+        this.role = role;
     }
 
     @Override
@@ -38,8 +42,16 @@ public class User implements Serializable {
         return Objects.hash(login);
     }
 
-    public static User createUser(String login,String name, String secondName, String password, String email) {
-        return new User(0,login, name,  secondName,  password,  email);
+    public static User createUser(String login,String name, String secondName, String password, String email,String phone) {
+        return new User(0,login, name,  secondName,  password,  email,phone, Role.CLIENT);
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public int getId() {
@@ -80,5 +92,9 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+    public static class Role{
+        public static String MANAGER="manager";
+        public static String CLIENT="client";
     }
 }

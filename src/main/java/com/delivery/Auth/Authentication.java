@@ -11,10 +11,10 @@ import java.sql.SQLException;
 public class Authentication {
 
 
-    public static User register(String login, String name, String secondName, String password, String email) throws SQLException {
+    public static User register(String login, String name, String secondName, String password, String email,String phone) throws SQLException {
         String generatedSecuredPasswordHash = PasswordHashing.generatePasswordHash(password);
         System.out.println(generatedSecuredPasswordHash);
-        User user = User.createUser(login,name,secondName,generatedSecuredPasswordHash,email);
+        User user = User.createUser(login,name,secondName,generatedSecuredPasswordHash,email,phone);
          if (!UserDAO.getInstance().insertUser(user)){
          throw new SQLException();
          }
@@ -23,6 +23,9 @@ public class Authentication {
 
     public static User login(String login, String password) throws IllegalPasswordException{
         User user = UserDAO.getInstance().getUserByLogin(login);
+        if (user==null){
+            return null;
+        }
         try {
             if (!PasswordHashing.validatePassword(password,user.getPassword())){
                 throw new IllegalPasswordException();

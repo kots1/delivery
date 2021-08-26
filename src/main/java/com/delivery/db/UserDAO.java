@@ -34,6 +34,7 @@ public class UserDAO {
             statement.setString(3, user.getName());
             statement.setString(4, user.getSecondName());
             statement.setString(5, user.getEmail());
+            statement.setString(6, user.getPhone());
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -64,7 +65,9 @@ public class UserDAO {
                 String first_name =set.getString("first_name");
                 String second_name =set.getString("second_name");
                 String email=set.getString("email");
-                user= new User(id,login,first_name,second_name,password,email);
+                String role=set.getString("role");
+                String phone=set.getString("phone");
+                user= new User(id,login,first_name,second_name,password,email,phone,role);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -89,7 +92,9 @@ public class UserDAO {
                 String login =set.getString("login");
                 String second_name =set.getString("second_name");
                 String email=set.getString("email");
-                users.add( new User(id,login,first_name,second_name,password,email));
+                String phone=set.getString("phone");
+                String role=set.getString("role");
+                users.add( new User(id,login,first_name,second_name,password,email,phone,role));
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
