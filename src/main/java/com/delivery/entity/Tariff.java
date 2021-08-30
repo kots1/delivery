@@ -1,18 +1,34 @@
 package com.delivery.entity;
 
-public class Tariff {
+import java.io.Serializable;
+
+public class Tariff implements Serializable {
     private int id;
+    private String name;
     private int pricePerKm;
     private int pricePerM3;
     private int pricePerKg;
     private Transport transport;
 
-    public Tariff(int id, int pricePerKm, int pricePerM3, int pricePerKg, Transport transport) {
+    public Tariff(int id, String name, int pricePerKm, int pricePerM3, int pricePerKg, Transport transport) {
         this.id = id;
+        this.name = name;
         this.pricePerKm = pricePerKm;
         this.pricePerM3 = pricePerM3;
         this.pricePerKg = pricePerKg;
         this.transport = transport;
+    }
+
+    public static Tariff createTariff(String name, int pricePerKm, int pricePerM3, int pricePerKg, Transport transport) {
+        return new Tariff(0,name,pricePerKm,pricePerM3,pricePerKg,transport);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {

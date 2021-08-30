@@ -5,13 +5,13 @@
     <title>registration</title>
   <jsp:include page="links.html"/>
 
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/form.css" />
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 
-<div class="container">
-  <div class="row">
+<div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
     <div class="col-md-6 col-md-offset-3">
 
 

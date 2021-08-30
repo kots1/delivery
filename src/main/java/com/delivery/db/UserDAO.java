@@ -28,7 +28,7 @@ public class UserDAO {
         ResultSet resultSet = null;
         try {
             connection = dbManager.getConnection();
-            statement = connection.prepareStatement(SQLQuery.INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(UserSQLQuery.INSERT_USER, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
             statement.setString(3, user.getName());
@@ -56,7 +56,7 @@ public class UserDAO {
         ResultSet set=null;
         try {
             connection = dbManager.getConnection();
-            statement = connection.prepareStatement(SQLQuery.SELECT_USER_BY_LOGIN);
+            statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_LOGIN);
             statement.setString(1,login);
             set= statement.executeQuery();
             if (set.next()){
@@ -84,7 +84,7 @@ public class UserDAO {
         try {
             connection = dbManager.getConnection();
             statement = connection.createStatement();
-            set= statement.executeQuery(SQLQuery.SELECT_USERS);
+            set= statement.executeQuery(UserSQLQuery.SELECT_USERS);
             while (set.next()){
                 int id = set.getInt("user_id");
                 String password =set.getString("password");

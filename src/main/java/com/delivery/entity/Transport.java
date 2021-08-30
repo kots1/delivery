@@ -1,6 +1,8 @@
 package com.delivery.entity;
 
-public class Transport {
+import java.io.Serializable;
+
+public class Transport implements Serializable {
     private int id;
     private String description;
     private int maxKg;
@@ -13,6 +15,10 @@ public class Transport {
         this.maxKg = maxKg;
         this.maxM3 = maxM3;
         this.timePer100km = timePer100km;
+    }
+
+    public static Transport createTransport(String description, int maxKg, int maxM3, int timePer100km) {
+        return new Transport(0,description,maxKg,maxM3,timePer100km);
     }
 
     public int getId() {

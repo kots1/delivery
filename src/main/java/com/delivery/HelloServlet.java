@@ -13,15 +13,10 @@ import javax.servlet.annotation.*;
 public class HelloServlet extends HttpServlet {
 
     public void init() {
-        System.out.println("init");
-        System.out.println(Config.getDataSource());
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("test!");
         List<User> list= UserDAO.getInstance().findAllUsers();
-        System.out.println(list);
-        System.out.println( request.getSession().getId());
         request.setAttribute("users", list);
          request.getRequestDispatcher("/output.jsp").forward(request, response);
 

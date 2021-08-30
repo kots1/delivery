@@ -5,7 +5,7 @@
 <head>
     <jsp:include page="links.html"/>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/form.css" />
     <title>Title</title>
 
 </head>
@@ -14,7 +14,7 @@
 
 <c:if test="${sessionScope.user==null}">
     <div class="container">
-        <div class="row">
+        <div class="row h-100 justify-content-center align-items-center">
 
             <div class="col-md-offset-3 col-md-6">
                 <form data-toggle="validator" class="form-horizontal" action="login" method="post">
