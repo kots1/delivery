@@ -90,6 +90,10 @@ public class TypeBaggageDAO {
         return type;
     }
 
+    public boolean delete(int id) {
+        return dbManager.deleteElement(id,TypeSQLQuery.DELETE_TYPE);
+    }
+
     private static class TypeMapper implements EntityMapper<TypeBaggage> {
 
         @Override
