@@ -1,0 +1,69 @@
+<table class="table table-striped">
+    <thead>
+    <th>Id</th>
+    <th>Tariff</th>
+    <th>Direction</th>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Order date</th>
+    <th>Dispatch date</th>
+    <th>Receiving date</th>
+    <th>Characteristic</th>
+    <th>Order status</th>
+    <th>Action</th>
+    </thead>
+    <tbody>
+    <c:forEach var="order" items="${orders}">
+    <tr>
+        <td>
+                ${order.orderId}
+        </td>
+        <td>
+                ${order.tariff.name}
+        </td>
+        <td>
+                ${order.direction.startCity} - ${order.direction.finalCity}
+        </td>
+        <td>
+                    <fmt:formatNumber type = "number"
+                                      maxFractionDigits  = "2" value = "${order.price}" />
+        </td>
+        <td>
+                ${order.description}
+        </td>
+        <td>
+                ${order.orderDate}
+        </td>
+        <td>
+                ${order.dispatchDate}
+        </td>
+        <td>
+                ${order.receivingDate}
+        </td>
+        <td>
+                ${order.volume} m<sup>3</sup> ,${order.weight} kg
+        </td>
+
+        <td>
+            <c:if test="${order.orderStatus=='unpaid'}">
+                <form action="updateOrder" method="post">
+                    <input type="text" value="processing" name="status_${order.orderId}" hidden>
+                    <input type="text" value="profile" name="link" hidden>
+                    <input type="submit" value="pay">
+                </form>
+            </c:if>
+            <c:if test="${order.orderStatus!='unpaid'}">
+                ${order.orderStatus}
+            </c:if>
+        </td>
+
+        <td>
+
+            <form action="updateOrder" method="post">
+                <input type="submit" class="button" name="delete_${order.orderId}" value="delete">
+                <input type="text" value="manager" name="link" hidden>
+            </form>
+        </td>
+    </tr>
+    </c:forEach>
+</table>
