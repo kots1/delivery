@@ -18,28 +18,38 @@
             <form data-toggle="validator" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/tariff" method="post">
                 <span class="heading">Create tariff</span>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name" placeholder="Input name"  required>
+                    <input type="text" class="form-control" name="name_en" placeholder="Input name_en"  required>
+                    <div class="help-block with-errors"></div>
+                </div>
+                <c:forEach var="locale" items="${locales}">
+                    <c:if test="${locale!='en'}">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name_${locale}" placeholder="Input name_${locale}" >
+                        </div>
+                    </c:if>
+                </c:forEach>
+                <div class="form-group">
+                    <input type="number" min="0" class="form-control" name="priceKg" placeholder="Input price per kilogram"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="kg" placeholder="Input price per kilogram"  required>
+                    <input type="number" min="0" class="form-control" name="priceM3" placeholder="Input price per cubic meter"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="m3" placeholder="Input price per cubic meter"  required>
+                    <input type="number" min="0" class="form-control" name="priceKm" placeholder="Input price per kilometer"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="km" placeholder="Input price per kilometer"  required>
+                    <input type="number" min="0" class="form-control" name="maxKg" placeholder="Input max kg"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <label for="transport">Select transport for tariff</label>
-                    <select class="form-control" id="transport" name="transport" required>
-                        <c:forEach var="transport" items="${transports}">
-                            <option value="${transport.id}">ID ${transport.id}, ${transport.description}, ${transport.maxKg} kg, ${transport.maxM3} m3, ${transport.timePer100km} hours per 100km</option>
-                        </c:forEach>
-                    </select>
+                    <input type="number" min="0" class="form-control" name="maxM3" placeholder="Input max volume"  required>
+                    <div class="help-block with-errors"></div>
+                </div>
+                <div class="form-group">
+                    <input type="number" min="0" class="form-control" name="time" placeholder="Input time for 100 km"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
