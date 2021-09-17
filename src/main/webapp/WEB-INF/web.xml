@@ -7,7 +7,53 @@
         <param-name>DataSource</param-name>
         <param-value>jdbc/mysql</param-value>
     </context-param>
+    <context-param>
+        <param-name>locales</param-name>
+        <param-value>ru en ua</param-value>
+    </context-param>
     <listener>
-        <listener-class>com.delivery.Config</listener-class>
+        <listener-class>com.delivery.listener.ConfigListener</listener-class>
     </listener>
+    <welcome-file-list>
+        <welcome-file>main</welcome-file>
+    </welcome-file-list>
+
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+            <filter-class>com.delivery.filter.EncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>CookieFilter</filter-name>
+        <filter-class>com.delivery.filter.CookieLocaleFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CookieFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>AccessFilter</filter-name>
+        <filter-class>com.delivery.filter.CommandAccessFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AccessFilter</filter-name>
+        <url-pattern>/manager/*</url-pattern>
+    </filter-mapping>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
 </web-app>

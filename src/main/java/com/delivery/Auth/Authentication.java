@@ -13,7 +13,6 @@ public class Authentication {
 
     public static User register(String login, String name, String secondName, String password, String email,String phone) throws SQLException {
         String generatedSecuredPasswordHash = PasswordHashing.generatePasswordHash(password);
-        System.out.println(generatedSecuredPasswordHash);
         User user = User.createUser(login,name,secondName,generatedSecuredPasswordHash,email,phone);
          if (!UserDAO.getInstance().insertUser(user)){
          throw new SQLException();

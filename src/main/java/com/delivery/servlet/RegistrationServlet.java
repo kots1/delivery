@@ -1,5 +1,7 @@
-package com.delivery.Auth;
+package com.delivery.servlet;
 
+import com.delivery.Auth.Authentication;
+import com.delivery.entity.Role;
 import com.delivery.entity.User;
 
 import javax.servlet.ServletException;
@@ -16,28 +18,28 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/output.jsp").forward(req,resp);
+        req.getRequestDispatcher("/indexindex.jsp").forward(req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        resp.setCharacterEncoding("UTF-8");
         String login =req.getParameter("login");
         String name =req.getParameter("name");
         String secondName =req.getParameter("secondName");
         String password =req.getParameter("password");
         String email =req.getParameter("email");
         String phone =req.getParameter("phone");
-        System.out.println(name);
         User user;
         try {
-            user =Authentication.register(login,name,secondName,password,email,phone);
+            user = Authentication.register(login,name,secondName,password,email,phone);
             req.getSession().setAttribute("user",user);
+            req.getSession().setAttribute("role", Role.getRole(user).getName());
+            System.out.println(Role.getRole(user).getName());
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         req.setAttribute("login",name);
-        resp.sendRedirect("index.jsp");
+        resp.sendRedirect(req.getContextPath()+"/");
     }
 }

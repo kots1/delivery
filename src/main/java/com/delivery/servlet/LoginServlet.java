@@ -1,5 +1,8 @@
-package com.delivery.Auth;
+package com.delivery.servlet;
 
+import com.delivery.Auth.Authentication;
+import com.delivery.Auth.IllegalPasswordException;
+import com.delivery.entity.Role;
 import com.delivery.entity.User;
 
 import javax.servlet.ServletException;
@@ -15,8 +18,6 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        resp.setCharacterEncoding("UTF-8");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         User user = null;
@@ -33,6 +34,8 @@ public class LoginServlet extends HttpServlet {
         }
         System.out.println( req.getSession().getId());
         req.getSession().setAttribute("user",user);
+        req.getSession().setAttribute("role", Role.getRole(user).getName());
+        System.out.println(Role.getRole(user).getName());
         resp.sendRedirect(req.getContextPath()+"/");
     }
 }
