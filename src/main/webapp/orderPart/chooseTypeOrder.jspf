@@ -1,0 +1,49 @@
+<label>
+    Tariff</label>
+
+<select class="form-control" id="tariff" name="tariff" >
+    <c:forEach var="item" items="${tariffs}">
+        <option value="${item.id}"
+                <c:if test="${tariff==item.id}">
+                    selected
+                </c:if>
+        >
+                ${item.name}
+            ( ${item.pricePerKm} $ per km
+            , ${item.pricePerM3} $ per m3
+            , ${item.pricePerKg} $ per kg
+            ) Max weight = ${item.maxWeight} kg
+            ; Max volume = ${item.maxVolume} m3
+            ; Time per 100 km = ${item.timePer100km} hours
+        </option>
+    </c:forEach>
+
+</select>
+<hr>
+
+<label>
+    Direction</label>
+<select class="form-control" id="direction" name="direction" <c:if test="${step==1}">required</c:if> >
+    <c:forEach var="item" items="${directions}">
+        <option value="${item.id}" <c:if
+                test="${direction==item.id}"> selected </c:if>>
+                ${item.startCity} ->
+                ${item.finalCity}
+            ( ${item.distance} km )
+        </option>
+    </c:forEach>
+
+</select>
+
+<label>
+    Type baggage</label>
+<select class="form-control"  name="type" <c:if test="${step==1}">required</c:if> >
+    <c:forEach var="item" items="${types}">
+        <option value="${item.id}" <c:if
+                test="${type==item.id}"> selected </c:if>>
+                ${item.type}
+            ( coefficient: ${item.coefficient} )
+        </option>
+    </c:forEach>
+
+</select>
