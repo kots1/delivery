@@ -1,0 +1,68 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<table class="table table-striped">
+    <thead>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Price per kilogram</th>
+    <th>Price per cubic meter</th>
+    <th>Price per kilometer</th>
+    <th>Max weight</th>
+    <th>Max volume</th>
+    <th>Time per 100 km</th>
+    <th>Action</th>
+    </thead>
+    <tbody>
+    <c:forEach var="tariff" items="${tariffs}">
+    <tr>
+        <td>
+                ${tariff.id}
+        </td>
+        <td>
+                ${tariff.name}
+        </td>
+        <td>
+                ${tariff.pricePerKm}
+        </td>
+        <td>
+                ${tariff.pricePerM3}
+        </td>
+        <td>
+                ${tariff.pricePerKg}
+        </td>
+        <td>
+                ${tariff.maxWeight}
+        </td>
+        <td>
+                ${tariff.maxVolume}
+        </td>
+        <td>
+                ${tariff.timePer100km}
+        </td>
+        <td>
+        <div class="row">
+            <form action="updateTariff" method="post">
+                <c:if test="${tariff.isAlive==true}">
+                    <input type="text" name="alive" value="false_${tariff.id}" hidden>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </c:if>
+                <c:if test="${tariff.isAlive==false}">
+                    <input type="text" name="alive" value="true_${tariff.id}" hidden>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-eye-slash"></i>
+                    </button>
+                </c:if>
+            </form>
+            <form action="updateTariff" method="post">
+                <input type="text" name="delete" value="${tariff.id}" hidden>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </form>
+        </div>
+        </td>
+    </tr>
+    </c:forEach>
+</table>

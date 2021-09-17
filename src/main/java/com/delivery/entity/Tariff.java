@@ -5,22 +5,94 @@ import java.io.Serializable;
 public class Tariff implements Serializable {
     private int id;
     private String name;
-    private int pricePerKm;
-    private int pricePerM3;
-    private int pricePerKg;
-    private Transport transport;
+    private double pricePerKm;
+    private double pricePerM3;
+    private double pricePerKg;
+    private double maxWeight;
+    private double maxVolume;
+    private double timePer100km;
+    private boolean  isAlive;
 
-    public Tariff(int id, String name, int pricePerKm, int pricePerM3, int pricePerKg, Transport transport) {
-        this.id = id;
-        this.name = name;
-        this.pricePerKm = pricePerKm;
-        this.pricePerM3 = pricePerM3;
-        this.pricePerKg = pricePerKg;
-        this.transport = transport;
+
+    public double getMaxWeight() {
+        return maxWeight;
     }
 
-    public static Tariff createTariff(String name, int pricePerKm, int pricePerM3, int pricePerKg, Transport transport) {
-        return new Tariff(0,name,pricePerKm,pricePerM3,pricePerKg,transport);
+    public void setMaxWeight(double maxWeight) {
+        this.maxWeight = maxWeight;
+    }
+
+    public double getMaxVolume() {
+        return maxVolume;
+    }
+
+    public void setMaxVolume(double maxVolume) {
+        this.maxVolume = maxVolume;
+    }
+
+    public double getTimePer100km() {
+        return timePer100km;
+    }
+
+    public void setTimePer100km(double timePer100km) {
+        this.timePer100km = timePer100km;
+    }
+
+    public static class Builder {
+        private final Tariff tariff;
+
+        public Builder() {
+            tariff = new Tariff();
+        }
+
+        public Builder id(int id){
+            tariff.id=id;
+            return this;
+        }
+
+        public Builder name(String name){
+            tariff.name=name;
+            return this;
+        }
+
+        public Builder pricePerKm(double pricePerKm){
+            tariff.pricePerKm=pricePerKm;
+            return this;
+        }
+
+        public Builder isAlive(boolean isAlive){
+            tariff.isAlive=isAlive;
+            return this;
+        }
+
+        public Builder pricePerM3(double pricePerM3){
+            tariff.pricePerM3=pricePerM3;
+            return this;
+        }
+
+        public Builder pricePerKg(double pricePerKg){
+            tariff.pricePerKg=pricePerKg;
+            return this;
+        }
+
+        public Builder maxWeight(double maxWeight){
+            tariff.maxWeight=maxWeight;
+            return this;
+        }
+
+        public Builder maxVolume(double maxVolume){
+            tariff.maxVolume=maxVolume;
+            return this;
+        }
+
+        public Builder timePer100km(double timePer100km){
+            tariff.timePer100km=timePer100km;
+            return this;
+        }
+        public Tariff build(){
+            return tariff;
+        }
+
     }
 
     public String getName() {
@@ -39,23 +111,23 @@ public class Tariff implements Serializable {
         this.id = id;
     }
 
-    public int getPricePerKm() {
+    public double getPricePerKm() {
         return pricePerKm;
     }
 
-    public void setPricePerKm(int pricePerKm) {
+    public void setPricePerKm(double pricePerKm) {
         this.pricePerKm = pricePerKm;
     }
 
-    public int getPricePerM3() {
+    public double getPricePerM3() {
         return pricePerM3;
     }
 
-    public void setPricePerM3(int pricePerM3) {
+    public void setPricePerM3(double pricePerM3) {
         this.pricePerM3 = pricePerM3;
     }
 
-    public int getPricePerKg() {
+    public double getPricePerKg() {
         return pricePerKg;
     }
 
@@ -63,11 +135,31 @@ public class Tariff implements Serializable {
         this.pricePerKg = pricePerKg;
     }
 
-    public Transport getTransport() {
-        return transport;
+
+
+    @Override
+    public String toString() {
+        return "Tariff{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", pricePerKm=" + pricePerKm +
+                ", pricePerM3=" + pricePerM3 +
+                ", pricePerKg=" + pricePerKg +
+                ", maxWeight=" + maxWeight +
+                ", maxVolume=" + maxVolume +
+                ", timePer100km=" + timePer100km +
+                '}';
     }
 
-    public void setTransport(Transport transport) {
-        this.transport = transport;
+    public void setPricePerKg(double pricePerKg) {
+        this.pricePerKg = pricePerKg;
+    }
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 }
