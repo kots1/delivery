@@ -1,5 +1,6 @@
 package com.delivery.db;
 
+import com.delivery.entity.Tariff;
 import com.delivery.entity.User;
 
 import java.sql.*;
@@ -15,12 +16,14 @@ public class UserDAO {
         dbManager = DBManager.getInstance();
     }
 
-    public static UserDAO getInstance() {
-        if (userDAO==null){
-            userDAO=new UserDAO();
+
+    public synchronized static UserDAO getInstance() {
+        if (userDAO == null) {
+            userDAO = new UserDAO();
         }
         return userDAO;
     }
+
     public boolean insertUser(User user) {
 
         Connection connection = null;
@@ -29,12 +32,13 @@ public class UserDAO {
         try {
             connection = dbManager.getConnection();
             statement = connection.prepareStatement(UserSQLQuery.INSERT_USER, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getLogin());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getName());
-            statement.setString(4, user.getSecondName());
-            statement.setString(5, user.getEmail());
-            statement.setString(6, user.getPhone());
+            int index = 1;
+            statement.setString(index++, user.getLogin());
+            statement.setString(index++, user.getPassword());
+            statement.setString(index++, user.getName());
+            statement.setString(index++, user.getSecondName());
+            statement.setString(index++, user.getEmail());
+            statement.setString(index, user.getPhone());
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -50,58 +54,63 @@ public class UserDAO {
     }
 
     public User getUserByLogin(String login) {
-        User user=null;
-        Connection connection=null;
-        PreparedStatement statement=null;
-        ResultSet set=null;
+        User user = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
         try {
             connection = dbManager.getConnection();
             statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_LOGIN);
-            statement.setString(1,login);
-            set= statement.executeQuery();
-            if (set.next()){
-                int id = set.getInt("user_id");
-                String password =set.getString("password");
-                String first_name =set.getString("first_name");
-                String second_name =set.getString("second_name");
-                String email=set.getString("email");
-                String role=set.getString("role");
-                String phone=set.getString("phone");
-                user= new User(id,login,first_name,second_name,password,email,phone,role);
+            statement.setString(1, login);
+            set = statement.executeQuery();
+            if (set.next()) {
+                user = new UserMapper().mapRow(set);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-        }finally {
-            dbManager.closeObject(connection,statement,set);
+        } finally {
+            dbManager.closeObject(connection, statement, set);
         }
         return user;
     }
+
     public List<User> findAllUsers() {
-        List<User> users = new ArrayList<>();
-        Connection connection=null;
-        Statement statement=null;
-        ResultSet set=null;
+        return dbManager.getAllElements(new  UserMapper(),UserSQLQuery.SELECT_USERS);
+    }
+
+    public User getUserById(int userId) {
+        User user = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
         try {
             connection = dbManager.getConnection();
-            statement = connection.createStatement();
-            set= statement.executeQuery(UserSQLQuery.SELECT_USERS);
-            while (set.next()){
-                int id = set.getInt("user_id");
-                String password =set.getString("password");
-                String first_name =set.getString("first_name");
-                String login =set.getString("login");
-                String second_name =set.getString("second_name");
-                String email=set.getString("email");
-                String phone=set.getString("phone");
-                String role=set.getString("role");
-                users.add( new User(id,login,first_name,second_name,password,email,phone,role));
+            statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_ID);
+            statement.setInt(1, userId);
+            set = statement.executeQuery();
+            if (set.next()) {
+                user= new UserMapper().mapRow(set);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+        } finally {
+            dbManager.closeObject(connection, statement, set);
         }
-        finally {
-            dbManager.closeObject(connection,statement,set);
+        return user;
+    }
+    private static class UserMapper implements EntityMapper<User>{
+
+        @Override
+        public User mapRow(ResultSet rs) throws SQLException {
+            int id = rs.getInt(UserSQLQuery.FIELD_ID);
+            String password = rs.getString(UserSQLQuery.FIELD_PASSWORD);
+            String first_name = rs.getString(UserSQLQuery.FIELD_NAME);
+            String login = rs.getString(UserSQLQuery.FIELD_LOGIN);
+            String second_name = rs.getString(UserSQLQuery.FIELD_SECOND_NAME);
+            String email = rs.getString(UserSQLQuery.FIELD_EMAIL);
+            String phone = rs.getString(UserSQLQuery.FIELD_PHONE);
+            int roleId = rs.getInt(UserSQLQuery.FIELD_ROLE);
+            return new User(id, login, first_name, second_name, password, email, phone, roleId);
         }
-        return users;
     }
 }
