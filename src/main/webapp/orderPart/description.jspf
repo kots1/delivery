@@ -1,0 +1,8 @@
+<div class="form-group">
+    <h3>
+        Description of baggage </h3>
+    <hr>
+
+    <input type="text" value="${desc}" class="form-control" name="desc" <c:if test="${step==3}">required</c:if>>
+    <div class="help-block with-errors"></div>
+</div>
