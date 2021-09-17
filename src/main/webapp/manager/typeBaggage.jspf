@@ -19,6 +19,14 @@
     <td>
         ${type.coefficient}
     </td>
+    <td>
+      <form action="updateType" method="post">
+        <input type="text" name="delete" value="${type.id}" hidden>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-trash"></i>
+        </button>
+      </form>
+    </td>
     </tr>
   </c:forEach>
 </table>
