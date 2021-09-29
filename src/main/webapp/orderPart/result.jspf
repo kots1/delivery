@@ -1,17 +1,12 @@
 <div class="container">
-    <h2>Characteristics</h2>
+    <h2><fmt:message key="create.order.characteristics"/></h2>
     <hr>
-    <h3>total weight : ${weight} kg </h3>
-    <h3>total volume : ${volume} m<sup>3</sup></h3>
-    <h5>
-        length: ${length}m ,
-        width: ${width}m ,
-        height: ${height}m
-    </h5>
+    <h3><fmt:message key="create.order.totalWeight"/> : ${weight} <fmt:message key="tariff.shortKg"/> </h3>
+    <h3><fmt:message key="create.order.totalVolume"/> : ${volume} m<sup>3</sup></h3>
     <br>
-    <h4>Approximate receiving date : ${receivingDate}</h4>
+    <h4><fmt:message key="create.order.approximateDate"/> : ${receivingDate}</h4>
     <hr>
-    <h2>Total price: <fmt:formatNumber type = "number"
+    <h2><fmt:message key="create.order.totalPrice"/>: <fmt:formatNumber type = "number"
                                        maxFractionDigits  = "2" value = "${price}" /> $
     </h2>
 </div>

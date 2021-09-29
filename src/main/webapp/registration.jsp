@@ -1,5 +1,10 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8"
          language="java"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="resources"/>
+
 <html>
 <head>
     <title>registration</title>
@@ -16,48 +21,48 @@
 
 
       <form data-toggle="validator" class="form-horizontal" role="form" action="registration" method="post">
-        <span class="heading">РЕЄСТРАЦІЯ</span>
+        <span class="heading"><fmt:message key="registration.title"/></span>
         <div class="form-group">
-          <input type="text" class="form-control" name="login" id="inputLogin" placeholder="Ведіть Ваш Логін"  required>
+          <input type="text" class="form-control" name="login" id="inputLogin" placeholder="<fmt:message key="registration.input.login"/>" value="${login}"  required>
           <i class="fa fa-user"></i>
-          <div class="help-block with-errors"></div>
+          <div class="help-block with-errors">${loginError}</div>
         </div>
         <div class="form-group">
-          <input type="text" class="form-control" name="name" id="inputName" placeholder="Ведіть Ваше ім'я"  required>
+          <input type="text" class="form-control" name="name" id="inputName" placeholder="<fmt:message key="registration.input.name"/>" value="${name}"  required>
           <i class="fa fa-address-card"></i>
           <div class="help-block with-errors"></div>
         </div>
         <div class="form-group">
-          <input type="text" class="form-control" name="secondName" id="inputSecondName" placeholder="Ведіть Ваше Прівзище"  required>
+          <input type="text" class="form-control" name="secondName" id="inputSecondName" placeholder="<fmt:message key="registration.input.secondName"/>" value="${secondName}" required>
           <i class="fa fa-address-card"></i>
           <div class="help-block with-errors"></div>
         </div>
         <div class="form-group">
-          <input type="email" class="form-control" name="email" id="inputEmail" placeholder="Email" data-error="Ви не правильно ввели E-mail" required >
+          <input type="email" class="form-control" name="email" id="inputEmail" placeholder="Email" data-error="<fmt:message key="registration.incorrect.email"/>" value="${email}" required >
           <i class="fa fa-at"></i>
           <div class="help-block with-errors"></div>
         </div>
         <div class="form-group">
-          <input type="number" class="form-control" name="phone" data-minlength="10" id="inputPhone" placeholder="Phone" data-error="Ви не правильно ввели номер телефону" required >
+          <input type="number" class="form-control" name="phone" data-minlength="10" id="inputPhone" placeholder="<fmt:message key="registration.input.phone"/>" value="${phone}" data-error="<fmt:message key="registration.incorrect.phone"/>" required >
           <i class="fa fa-phone"></i>
           <div class="help-block with-errors"></div>
         </div>
         <div class="form-group">
           <div class="form-inline row">
             <div class="form-group col-sm-6">
-              <input type="password" data-toggle="validator" data-minlength="6" class="form-control" data-error="Мінімум 6 елементів" id="inputPassword" placeholder="Ведіть пароль" name="password" required>
+              <input type="password" data-toggle="validator" data-minlength="6" class="form-control" data-error="<fmt:message key="registration.incorrect.minPassword"/>" id="inputPassword" placeholder="<fmt:message key="registration.input.password"/>" name="password" required>
               <i class="fa fa-lock"></i>
               <span class="help-block with-errors" ></span>
             </div>
             <div class="form-group col-sm-6">
-              <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Помилка! Паролі не співпадають!" placeholder="Повторіть пароль" required>
+              <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="<fmt:message key="registration.incorrect.matchPassword"/>" placeholder="<fmt:message key="registration.input.repeatPassword"/>" required>
               <i class="fa fa-lock"></i>
               <div class="help-block with-errors"></div>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-default">Зареєстуватися</button>
+          <button type="submit" class="btn btn-default"><fmt:message key="registration.input.signUp"/></button>
         </div>
       </form>
     </div>

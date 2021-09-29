@@ -1,77 +1,180 @@
-<%@ page import="com.delivery.entity.OrderStatus" %>
+<%@ taglib prefix="m" uri="https://delivery.com/checkBox" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="resources"/>
+
+<div class="row mt-5 justify-content-center align-items-center">
+    <div class="modal-body row">
+        <div class="col-md-3">
+            <form action="manager">
+                <h3><fmt:message key="main.filter"/></h3>
+                <hr>
+                <h5><fmt:message key="main.title.direction"/></h5>
+
+                <input type="text" name="part" value="order" hidden>
+                <c:forEach var="direction" items="${directions}">
+                    <input class="form-check-input ml-3" type="checkbox" id="${direction.id}" name="directionId"
+                           value="${direction.id}"
+                        <m:checkBox var="${direction.id}"
+                                    items='${paramValues.directionId}'/> >
+                    <label class="form-check-label" for="${direction.id}">${direction.startCity}
+                        - ${direction.finalCity}
+                    </label>
+                    <br>
+                </c:forEach>
+                <hr>
+                <h5><fmt:message key="order.orderDate"/></h5>
 
 
-    <table class="table table-striped">
-        <thead>
-        <th>Id</th>
-        <th>Tariff</th>
-        <th>User</th>
-        <th>Direction</th>
-        <th>Price</th>
-        <th>Description</th>
-        <th>Order date</th>
-        <th>Characteristic</th>
-        <th>Order status</th>
-        <th>Action</th>
-        </thead>
-        <tbody>
-        <c:forEach var="order" items="${orders}">
-        <tr>
-            <td>
-                    ${order.orderId}
-            </td>
-            <td>
-                    ${order.tariff.name}
-            </td>
-            <td>
-                    ${order.user.login} ( ${order.user.secondName} ${order.user.name})
-            </td>
-            <td>
-                    ${order.direction.startCity} - ${order.direction.finalCity}
-            </td>
-            <td>
-                <fmt:formatNumber type = "number"
-                                  maxFractionDigits  = "2" value = "${order.price}" />
-            </td>
-            <td>
-                    ${order.description}
-            </td>
-            <td>
-                    ${order.orderDate}
-            </td>
-            <td>
-                    ${order.volume} m<sup>3</sup> ,${order.weight} kg
-            </td>
-            <td>
-                <form action="updateOrder" method="post">
-                <select onchange="changeStatus(${order.orderId},'${order.orderStatus}')" name="status_${order.orderId}" id="status_${order.orderId}" <c:if test="${order.orderStatus=='unpaid'||order.orderStatus=='taken'}"> disabled </c:if> >
-                    <c:forEach var="status" items='<%= OrderStatus.getArray()%>'>
-                        <c:if test="${status!='unpaid'}">
-                            <option <c:if test="${order.orderStatus==status}"> selected </c:if> >${status}</option>
-                        </c:if>
-                    </c:forEach>
-                    <c:if test="${order.orderStatus=='unpaid'}">
-                        <option selected>unpaid</option>
-                    </c:if>
-                </select>
-                    <input type="text" value="manager" name="link" hidden>
-                    <input type="submit" value="submit" id="${order.orderId}" class="btn btn-primary update ${order.orderId}">
+                <input type="date" name="orderDate" value="${requestScope.orderDate}">
+                <hr>
+                <input type="text" name="page" value="1" hidden>
+                <input type="submit" value="<fmt:message key="main.filter"/>">
             </form>
-            </td>
-            <td>
-                <form action="updateOrder" method="post">
-                <input type="text" name="delete_${order.orderId}" value="delete" hidden>
-                    <input type="text" value="manager" name="link" hidden>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-trash"></i>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-striped">
+                <thead>
+                <th>Id</th>
+                <th><fmt:message key="order.tariff"/></th>
+                <th><fmt:message key="order.user"/></th>
+                <th><fmt:message key="order.direction"/></th>
+                <th><fmt:message key="order.price"/></th>
+                <th><fmt:message key="order.orderDate"/></th>
+                <th><fmt:message key="order.detail"/></th>
+                <th><fmt:message key="order.status"/></th>
+                <th><fmt:message key="main.action"/></th>
+                </thead>
+                <tbody>
+                <c:forEach var="order" items="${orders}">
+                <tr>
+                    <td>
+                            ${order.orderId}
+                    </td>
+                    <td>
+                            ${order.tariff.name}
+                    </td>
+                    <td>
+                            ${order.user.login}
+                    </td>
+                    <td>
+                            ${order.direction.startCity} - ${order.direction.finalCity}
+                    </td>
+                    <td>
+                        <fmt:formatNumber type="number"
+                                          maxFractionDigits="2" value="${order.price}"/>
+                    </td>
+                    <td>
+                            ${order.orderDate}
+                    </td>
+                    <td>
+                        <a href="detail?orderId=${order.orderId}"><fmt:message key="order.more"/></a>
+                    </td>
+                    <td>
+                        <form action="updateOrder" method="post">
+                            <c:choose>
+                                <c:when test="${order.orderStatus=='processing'}">
+                                    <fmt:message key="order.processing"/>
+                                    <input type="text" name="status_${order.orderId}" value="unpaid" hidden>
+                                    <input type="submit" value="<fmt:message key="order.receipt"/>" class="btn btn-primary">
+                                </c:when>
+                                <c:when test="${order.orderStatus=='paid'}">
+                                    <fmt:message key="order.paid"/>
+                                    <input type="text" name="status_${order.orderId}" value="in the way" hidden>
+                                    <input type="submit" value="<fmt:message key="order.sent"/>" class="btn btn-primary">
+                                </c:when>
+                                <c:when test="${order.orderStatus=='in the way'}">
+                                    <fmt:message key="order.way"/>
+                                    <input type="text" name="status_${order.orderId}" value="delivered" hidden>
+                                    <input type="submit" value="<fmt:message key="order.delivered"/>" class="btn btn-primary">
+                                </c:when>
+                                <c:when test="${order.orderStatus=='delivered'}">
+                                    <fmt:message key="order.delivered"/>
+                                    <input type="text" name="status_${order.orderId}" value="taken" hidden>
+                                    <input type="submit" value="<fmt:message key="order.taken"/>" class="btn btn-primary">
+                                </c:when>
+                                <c:otherwise>
+                                    <fmt:message key="order.${order.orderStatus}"/>
+                                </c:otherwise>
+                            </c:choose>
+                            <input type="text" value="manager" name="link" hidden>
+                        </form>
+                    </td>
+                    <td>
+                        <c:if test="${order.orderStatus=='processing' || order.orderStatus=='unpaid'}">
+                            <form action="updateOrder" method="post">
+                                <input type="text" name="delete_${order.orderId}" value="delete" hidden>
+                                <input type="text" value="manager" name="link" hidden>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </c:if>
+                    </td>
+                </tr>
+                </c:forEach>
+            </table>
+
+            <form action="manager">
+
+                <div class="row mt-5 justify-content-center align-items-center">
+                    <nav aria-label="Navigation for direction">
+                        <c:if test="${noOfPages!=1}">
+                            <ul class="pagination">
+                                <c:if test="${currentPage != 1}">
+                                    <li class="page-item">
+                                        <button type="submit" class="page-link" name="page" value="${currentPage-1}"
+                                        ><fmt:message key="pagination.prev"/>
+                                        </button>
+                                    </li>
+                                </c:if>
+
+                                <c:forEach begin="1" end="${noOfPages}" var="i">
+                                    <c:choose>
+                                        <c:when test="${currentPage eq i}">
+                                            <li class="page-item active"><a class="page-link">
+                                                    ${i} <span class="sr-only">(current)</span></a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="submit" class="page-link" name="page" value="${i}"
+                                            >${i}
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <c:if test="${currentPage lt noOfPages}">
+                                    <li class="page-item">
+                                        <button type="submit" class="page-link" name="page" value="${currentPage+1}"
+                                        ><fmt:message key="pagination.next"/>
+                                        </button>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </c:if>
+                    </nav>
+                </div>
+                <c:if test="${href==null}">
+                    <button type="submit" class="page-link" name="href" value="yes">
+                        <fmt:message key="report.generate"/>
                     </button>
-                </form>
+                </c:if>
+                <c:if test="${href!=null}">
+                    <a href="report"><fmt:message key="report.download"/> </a>
+                </c:if>
 
-            </td>
-        </tr>
-        </c:forEach>
-    </table>
-<script src="${pageContext.request.contextPath}/js/status.js"></script>
+                <input type="text" name="part" value="order" hidden>
+                <c:if test="${orderDate!=null}">
+                    <input type="text" name="orderDate" value="${param.orderDate}" hidden>
+                </c:if>
+                <c:forEach items='${paramValues.directionId}' var="direction">
+                    <input type="text" name="directionId" value="${direction}" hidden>
+                </c:forEach>
 
-
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,39 +1,38 @@
 <div class="form-group">
     <label>
-        Weight (kg) </label>
+        <fmt:message key="create.order.weight"/> (<fmt:message key="create.order.weightKG"/>) </label>
     <input type="number" value="${weight}" step="0.001" min="0.001" class="form-control"
            name="weight"
-           <c:if test="${step==2}">readonly</c:if> >
+           <c:if test="${step==0}">required</c:if> >
     <div class="help-block with-errors"></div>
 </div>
 <br>
 
 <div class="form-group">
     <label>
-        Size </label>
+        <fmt:message key="create.order.size"/> </label>
     <div class="form-row">
         <div class="col-md-4">
             <input type="number" step="0.01" min="0.01" value="${length}"
-                   class="form-control volume" placeholder="length" name="length"
-                   required
-                   <c:if test="${step==2}">readonly</c:if> >
+                   class="form-control volume" placeholder="<fmt:message key="create.order.length"/>" name="length"
+
+                   <c:if test="${step==0}">required</c:if> >
         </div>
         <div class="col-md-4">
             <input type="number" step="0.01" min="0.01" value="${width}"
-                   class="form-control volume" placeholder="width" name="width" required
-                   <c:if test="${step==2}">readonly</c:if> >
+                   class="form-control volume" placeholder="<fmt:message key="create.order.width"/>" name="width"
+                   <c:if test="${step==0}">required</c:if> >
         </div>
         <div class="col-md-4">
             <input type="number" step="0.01" min="0.01" value="${height}"
-                   class="form-control volume" placeholder="height" name="height"
-                   required
-                   <c:if test="${step==2}">readonly</c:if> >
+                   class="form-control volume" placeholder="<fmt:message key="create.order.height"/>" name="height"
+                   <c:if test="${step==0}">required</c:if> >
         </div>
     </div>
 </div>
 <div class="form-group">
     <label>
-        Volume (m<sup>3</sup>)</label>
+        <fmt:message key="create.order.volume"/> (m<sup>3</sup>)</label>
     <input type="number" value="${volume}" class="form-control" name="volume" readonly>
-    <div class="help-block with-errors">${weightError}</div>
+    <div class="help-block with-errors"></div>
 </div>

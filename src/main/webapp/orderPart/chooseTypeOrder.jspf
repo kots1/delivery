@@ -1,5 +1,5 @@
 <label>
-    Tariff</label>
+    <fmt:message key="main.title.tariff"/></label>
 
 <select class="form-control" id="tariff" name="tariff" >
     <c:forEach var="item" items="${tariffs}">
@@ -9,12 +9,12 @@
                 </c:if>
         >
                 ${item.name}
-            ( ${item.pricePerKm} $ per km
-            , ${item.pricePerM3} $ per m3
-            , ${item.pricePerKg} $ per kg
-            ) Max weight = ${item.maxWeight} kg
-            ; Max volume = ${item.maxVolume} m3
-            ; Time per 100 km = ${item.timePer100km} hours
+            ( ${item.pricePerKm} $/<fmt:message key="tariff.shortKm"/>
+            , ${item.pricePerM3} $/<fmt:message key="tariff.shortM3"/>
+            , ${item.pricePerKg} $/<fmt:message key="tariff.shortKg"/>
+            )  <fmt:message key="tariff.averageSpeed"/> = <fmt:formatNumber type="number"
+                                                   maxFractionDigits="2" value="${100/order.tariff.timePer100km}"/>
+                    <fmt:message key="tariff.shortSpeed"/>
         </option>
     </c:forEach>
 
@@ -22,27 +22,27 @@
 <hr>
 
 <label>
-    Direction</label>
+    <fmt:message key="main.title.direction"/></label>
 <select class="form-control" id="direction" name="direction" <c:if test="${step==1}">required</c:if> >
     <c:forEach var="item" items="${directions}">
         <option value="${item.id}" <c:if
                 test="${direction==item.id}"> selected </c:if>>
                 ${item.startCity} ->
                 ${item.finalCity}
-            ( ${item.distance} km )
+            ( ${item.distance} <fmt:message key="tariff.shortKm"/> )
         </option>
     </c:forEach>
 
 </select>
 
 <label>
-    Type baggage</label>
+    <fmt:message key="main.title.type"/></label>
 <select class="form-control"  name="type" <c:if test="${step==1}">required</c:if> >
     <c:forEach var="item" items="${types}">
         <option value="${item.id}" <c:if
                 test="${type==item.id}"> selected </c:if>>
                 ${item.type}
-            ( coefficient: ${item.coefficient} )
+            ( <fmt:message key="type.coefficient"/>: ${item.coefficient} )
         </option>
     </c:forEach>
 
