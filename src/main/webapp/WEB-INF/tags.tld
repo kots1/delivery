@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+        "http://java.sun.com/j2ee/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+    <tlib-version>1.1</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>checkBox</short-name>
+    <uri>https://delivery.com/checkBox</uri>
+    <description>A simple tab library for the examples</description>
+
+    <tag>
+        <name>checkBox</name>
+        <tag-class>com.delivery.JspTag.CheckFilterTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+
+        </attribute>
+        <attribute>
+            <name>items</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Object</type>
+        </attribute>
+    </tag>
+</taglib>
