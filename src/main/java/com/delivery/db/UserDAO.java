@@ -1,10 +1,8 @@
 package com.delivery.db;
 
-import com.delivery.entity.Tariff;
 import com.delivery.entity.User;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
@@ -24,7 +22,7 @@ public class UserDAO {
         return userDAO;
     }
 
-    public boolean insertUser(User user) {
+    public boolean insertUser(User user)  {
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -75,7 +73,7 @@ public class UserDAO {
     }
 
     public List<User> findAllUsers() {
-        return dbManager.getAllElements(new  UserMapper(),UserSQLQuery.SELECT_USERS);
+        return dbManager.getAllElementsUsingLocale(new  UserMapper(),UserSQLQuery.SELECT_USERS);
     }
 
     public User getUserById(int userId) {
@@ -98,6 +96,27 @@ public class UserDAO {
         }
         return user;
     }
+
+    public boolean isAlreadyExist(String login) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_LOGIN);
+            statement.setString(1, login);
+            set = statement.executeQuery();
+            if (set.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            dbManager.closeObject(connection, statement, set);
+        }
+        return false;
+    }
+
     private static class UserMapper implements EntityMapper<User>{
 
         @Override

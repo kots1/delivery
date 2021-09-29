@@ -1,7 +1,6 @@
 package com.delivery.db;
 
 import com.delivery.CurrentLocale;
-import com.delivery.entity.Direction;
 import com.delivery.entity.Tariff;
 
 import java.sql.*;
@@ -23,13 +22,15 @@ public class TariffDAO {
         return tariffDAO;
     }
 
-    public List<Tariff> getAllTariff() {
-        return dbManager.getAllElements(new TariffMapper(),TariffSQLQuery.SELECT_TARIFF);
+    public List<Tariff> getAllTariffWithLimit(int start, int count) {
+        return dbManager.getAllElementsWithLimitUsingLocale(new TariffMapper(),TariffSQLQuery.SELECT_TARIFF,start,count);
     }
     public List<Tariff> getAllAliveTariff() {
-        return dbManager.getAllElements(new TariffMapper(),TariffSQLQuery.SELECT_ALIVE_TARIFF);
+        return dbManager.getAllElementsUsingLocale(new TariffMapper(),TariffSQLQuery.SELECT_ALIVE_TARIFF);
     }
-
+    public List<Tariff> getAllAliveTariffWithLimit(int start, int count) {
+        return dbManager.getAllElementsWithLimitUsingLocale(new TariffMapper(),TariffSQLQuery.SELECT_ALIVE_TARIFF_LIMIT,start,count);
+    }
     public  boolean insertTariff(Tariff tariff) {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -127,6 +128,11 @@ public class TariffDAO {
         }
         return false;
     }
+
+    public int getCount() {
+        return dbManager.getCount(TariffSQLQuery.GET_COUNT);
+    }
+
 
     private static class TariffMapper implements EntityMapper<Tariff>{
 

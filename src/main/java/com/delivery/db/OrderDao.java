@@ -1,5 +1,7 @@
 package com.delivery.db;
 
+import com.delivery.CurrentLocale;
+import com.delivery.FilterBuilder.OrderFilterBuilder;
 import com.delivery.entity.*;
 
 import java.sql.*;
@@ -23,26 +25,22 @@ public class OrderDao {
         return orderDao;
     }
 
+    public List<Order> getAllOrderWithLimit(int start, int count) {
+        return dbManager.getAllElementsWithLimit(new OrderMapper(),OrderSQLQuery.SELECT_ORDER_LIMIT,start,count);
+    }
+
+    public List<Order> getAllOrderWithFilter(String orderDate,int[] directionId) {
+        return dbManager.getAllElements(new OrderMapper(),OrderFilterBuilder.filterQuery(orderDate,directionId));
+
+    }
+    public List<Order> getAllOrderWithFilterWithLimit(String orderDate,int[] directionId,int start, int count) {
+        return dbManager.getAllElementsWithLimit(new OrderMapper(),OrderFilterBuilder.filterLimitsQuery(orderDate,directionId),start,count);
+
+    }
     public List<Order> getAllOrder() {
-        List<Order> result = new ArrayList<>();
-        Connection connection=null;
-        Statement statement=null;
-        ResultSet set=null;
-        try {
-            connection = dbManager.getConnection();
-            statement = connection.createStatement();
-            set= statement.executeQuery(OrderSQLQuery.SELECT_ORDER);
-            EntityMapper<Order> mapper = new OrderMapper();
-            while (set.next()){
-                result.add( mapper.mapRow(set) );
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        finally {
-            dbManager.closeObject(connection,statement,set);
-        }
-        return result;
+        return dbManager.getAllElements(new OrderMapper(),OrderSQLQuery.SELECT_ORDER);
+
+
     }
 
     public boolean insertOrder(Order order) {
@@ -138,7 +136,7 @@ public class OrderDao {
         }
     }
 
-    public List<Order> getOrderByUserId(int id) {
+    public List<Order> getOrderByUserId(int id,int start,int count) {
         List<Order> result = new ArrayList<>();
         Connection connection=null;
         PreparedStatement statement=null;
@@ -146,7 +144,10 @@ public class OrderDao {
         try {
             connection = dbManager.getConnection();
             statement = connection.prepareStatement(OrderSQLQuery.SELECT_ORDER_BY_USER_ID);
-            statement.setInt(1,id);
+            int index= 1;
+            statement.setInt(index++,id);
+            statement.setInt(index++,start-1);
+            statement.setInt(index,count);
             set= statement.executeQuery();
             EntityMapper<Order> mapper = new OrderMapper();
             while (set.next()){
@@ -159,6 +160,54 @@ public class OrderDao {
             dbManager.closeObject(connection,statement,set);
         }
         return result;
+    }
+
+    public Order getOrderById(int id) {
+        Order result = null;
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(OrderSQLQuery.SELECT_ORDER_BY_ID);
+            statement.setInt(1,id);
+            set= statement.executeQuery();
+            EntityMapper<Order> mapper = new OrderMapper();
+            if (set.next()){
+                result= mapper.mapRow(set) ;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        finally {
+            dbManager.closeObject(connection,statement,set);
+        }
+        return result;
+    }
+
+    public int getCount() {
+        return dbManager.getCount(OrderSQLQuery.GET_COUNT);
+    }
+
+    public int getOrderCountById(int id) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set=null;
+        int res = 0;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(OrderSQLQuery.GET_COUNT_BY_USER_ID);
+            statement.setInt(1,id);
+            set= statement.executeQuery();
+            if (set.next()){
+                res = set.getInt("count");
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            dbManager.closeObject(connection, statement,set);
+        }
+        return res;
     }
 
 

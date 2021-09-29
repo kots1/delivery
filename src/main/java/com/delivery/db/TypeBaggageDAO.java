@@ -94,6 +94,35 @@ public class TypeBaggageDAO {
         return dbManager.deleteElement(id,TypeSQLQuery.DELETE_TYPE);
     }
 
+    public List<TypeBaggage> getAllTypesWithLimit(int start, int count) {
+        List<TypeBaggage> result = new ArrayList<>();
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(TypeSQLQuery.SELECT_TYPES_LIMIT);
+            int index= 1;
+            statement.setInt(index++, start-1);
+            statement.setInt(index, count);
+            set= statement.executeQuery();
+            TypeMapper mapper = new TypeMapper();
+            while (set.next()){
+                result.add( mapper.mapRow(set) );
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        finally {
+            dbManager.closeObject(connection,statement,set);
+        }
+        return result;
+    }
+
+    public int getCount() {
+        return dbManager.getCount(TypeSQLQuery.GET_COUNT);
+    }
+
     private static class TypeMapper implements EntityMapper<TypeBaggage> {
 
         @Override

@@ -1,9 +1,11 @@
 package com.delivery.db;
 
 import com.delivery.CurrentLocale;
+import com.delivery.FilterBuilder.DirectionFilterBuilder;
 import com.delivery.entity.Direction;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DirectionDAO {
@@ -65,12 +67,15 @@ public class DirectionDAO {
         return false;
     }
 
-    public List<Direction> getAllDirection() {
-        return dbManager.getAllElements(new DirectionMapper(), DirectionSQLQuery.SELECT_DIRECTION);
+    public List<Direction> getAllDirectionWithLimit(int start, int count) {
+       return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(),DirectionSQLQuery.SELECT_DIRECTION_WITH_LIMIT,start,count);
     }
 
+    public List<Direction> getAllDirection() {
+        return dbManager.getAllElementsUsingLocale(new DirectionMapper(),DirectionSQLQuery.SELECT_DIRECTION);
+    }
     public List<Direction> getAllAliveDirection() {
-        return dbManager.getAllElements(new DirectionMapper(), DirectionSQLQuery.SELECT_ALIVE_DIRECTION);
+        return dbManager.getAllElementsUsingLocale(new DirectionMapper(), DirectionSQLQuery.SELECT_ALIVE_DIRECTION);
     }
 
     public Direction getDirectionById(int id) {
@@ -96,7 +101,38 @@ public class DirectionDAO {
         }
         return direction;
     }
-
+    public List<Direction> getDirectionFilterCities(String[] finalCity,String[] startCity,int start,int count) {
+        return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(),DirectionFilterBuilder.filterLimitsQuery(finalCity,startCity),start,count);
+    }
+    public int getDirectionFilterCitiesCount(String[] finalCity,String[] startCity) {
+        return dbManager
+                .getAllElementsUsingLocale(new DirectionMapper(),DirectionFilterBuilder.filterQuery(finalCity,startCity))
+                .size();
+    }
+    public List<String> getDistinctDirectionFinalCity() {
+        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_FINAL_CITY,DirectionSQLQuery.FIELD_FINAL);
+    }
+    private List<String> getDistinctDirectionCity(String query,String fieldName){
+        List<String> result = new ArrayList<>();
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, CurrentLocale.getLocale());
+            set= statement.executeQuery();
+            while (set.next()){
+                result.add( set.getString(fieldName));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            dbManager.closeObject(connection,statement,set);
+        }
+        return result;
+    }
     public boolean delete(int id) {
         return dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION_INFO)
                 && dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION);
@@ -121,6 +157,18 @@ public class DirectionDAO {
         return false;
     }
 
+    public List<String> getDistinctDirectionStartCity() {
+        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_START_CITY,DirectionSQLQuery.FIELD_START);
+
+    }
+
+    public int getCount() {
+        return dbManager.getCount(DirectionSQLQuery.GET_COUNT);
+    }
+    public int getAliveCount() {
+        return dbManager.getCount(DirectionSQLQuery.GET_ALIVE_COUNT);
+    }
+
     public static class DirectionMapper implements EntityMapper<Direction> {
 
         @Override
@@ -130,7 +178,7 @@ public class DirectionDAO {
             String finalCity = rs.getString(DirectionSQLQuery.FIELD_FINAL);
             String startCity = rs.getString(DirectionSQLQuery.FIELD_START);
             boolean isAlive = rs.getBoolean(DirectionSQLQuery.FIELD_ALIVE);
-            Direction direction = new Direction(id, distance, startCity, finalCity);
+            Direction direction = new Direction(id, distance, finalCity, startCity);
             direction.setAlive(isAlive);
             return direction;
         }
