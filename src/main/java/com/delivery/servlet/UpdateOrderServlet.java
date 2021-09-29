@@ -1,7 +1,9 @@
 package com.delivery.servlet;
 
+import com.delivery.EmailSend;
 import com.delivery.db.OrderDao;
-import com.delivery.entity.OrderStatus;
+import com.delivery.entity.Order;
+import com.delivery.entity.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet("/updateOrder")
 public class UpdateOrderServlet extends HttpServlet {
@@ -25,6 +25,11 @@ public class UpdateOrderServlet extends HttpServlet {
         switch (command[0]){
             case "status":
                 String status = req.getParameter(command[0]+"_"+command[1]);
+                if (status.equals("unpaid")){
+                    User user = (User) req.getSession().getAttribute("user");
+                    Order order = OrderDao.getInstance().getOrderById(Integer.parseInt(command[1]));
+                    EmailSend.sendEmail(user.getEmail(),order);
+                }
                 if (status.equals("in the way")){
                     OrderDao.getInstance().updatedDate(Integer.parseInt(command[1]),"dispatch");
                 }
