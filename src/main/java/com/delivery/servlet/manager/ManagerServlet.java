@@ -77,6 +77,7 @@ public class ManagerServlet extends HttpServlet {
         req.setAttribute("noOfPages", paginationBuilder.getNumberOfPages());
         req.setAttribute("currentPage", paginationBuilder.getPage());
         req.setAttribute("part",part);
+
         if (req.getParameter("href")!=null){
             ServletContext context = req.getSession().getServletContext();
 

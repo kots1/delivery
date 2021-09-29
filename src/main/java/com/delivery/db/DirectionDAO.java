@@ -24,33 +24,29 @@ public class DirectionDAO {
         return directionDAO;
     }
 
-    public boolean insertDirection(Direction direction) {
-        Connection connection = null;
+    public void insertDirection(Connection connection, Direction direction) throws SQLException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = dbManager.getConnection();
             statement = connection.prepareStatement(DirectionSQLQuery.INSERT_DIRECTION, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, direction.getDistance());
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 direction.setId(resultSet.getInt(1));
-                return true;
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("Cannot insert Direction", e);
+
         } finally {
-            dbManager.closeObject(connection, statement, resultSet);
+            dbManager.closeObject(statement, resultSet);
         }
-        return false;
     }
 
-    public boolean insertLocaleDirections(String locale, Direction direction, String startCity, String finalCity) {
-        Connection connection = null;
+    public void insertLocaleDirections(Connection connection, String locale, Direction direction, String startCity, String finalCity) throws SQLException {
         PreparedStatement statement = null;
         try {
-            connection = dbManager.getConnection();
             statement = connection.prepareStatement(DirectionSQLQuery.INSERT_LOCALE_NAME);
             int index = 1;
             statement.setInt(index++, direction.getId());
@@ -58,22 +54,22 @@ public class DirectionDAO {
             statement.setString(index++, startCity);
             statement.setString(index, finalCity);
             statement.execute();
-            return true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("Cannot insert locale " + locale + " in direction", e);
         } finally {
-            dbManager.closeObject(connection, statement);
+            dbManager.closeObject(statement);
         }
-        return false;
     }
 
     public List<Direction> getAllDirectionWithLimit(int start, int count) {
-       return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(),DirectionSQLQuery.SELECT_DIRECTION_WITH_LIMIT,start,count);
+        return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(), DirectionSQLQuery.SELECT_DIRECTION_WITH_LIMIT, start, count);
     }
 
     public List<Direction> getAllDirection() {
-        return dbManager.getAllElementsUsingLocale(new DirectionMapper(),DirectionSQLQuery.SELECT_DIRECTION);
+        return dbManager.getAllElementsUsingLocale(new DirectionMapper(), DirectionSQLQuery.SELECT_DIRECTION);
     }
+
     public List<Direction> getAllAliveDirection() {
         return dbManager.getAllElementsUsingLocale(new DirectionMapper(), DirectionSQLQuery.SELECT_ALIVE_DIRECTION);
     }
@@ -101,44 +97,49 @@ public class DirectionDAO {
         }
         return direction;
     }
-    public List<Direction> getDirectionFilterCities(String[] finalCity,String[] startCity,int start,int count) {
-        return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(),DirectionFilterBuilder.filterLimitsQuery(finalCity,startCity),start,count);
+
+    public List<Direction> getDirectionFilterCities(String[] finalCity, String[] startCity, int start, int count) {
+        return dbManager.getAllElementsWithLimitUsingLocale(new DirectionMapper(), DirectionFilterBuilder.filterLimitsQuery(finalCity, startCity), start, count);
     }
-    public int getDirectionFilterCitiesCount(String[] finalCity,String[] startCity) {
+
+    public int getDirectionFilterCitiesCount(String[] finalCity, String[] startCity) {
         return dbManager
-                .getAllElementsUsingLocale(new DirectionMapper(),DirectionFilterBuilder.filterQuery(finalCity,startCity))
+                .getAllElementsUsingLocale(new DirectionMapper(), DirectionFilterBuilder.filterQuery(finalCity, startCity))
                 .size();
     }
+
     public List<String> getDistinctDirectionFinalCity() {
-        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_FINAL_CITY,DirectionSQLQuery.FIELD_FINAL);
+        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_FINAL_CITY, DirectionSQLQuery.FIELD_FINAL);
     }
-    private List<String> getDistinctDirectionCity(String query,String fieldName){
+
+    private List<String> getDistinctDirectionCity(String query, String fieldName) {
         List<String> result = new ArrayList<>();
-        Connection connection=null;
-        PreparedStatement statement=null;
-        ResultSet set=null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
         try {
             connection = dbManager.getConnection();
             statement = connection.prepareStatement(query);
             statement.setString(1, CurrentLocale.getLocale());
-            set= statement.executeQuery();
-            while (set.next()){
-                result.add( set.getString(fieldName));
+            set = statement.executeQuery();
+            while (set.next()) {
+                result.add(set.getString(fieldName));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            dbManager.closeObject(connection,statement,set);
+        } finally {
+            dbManager.closeObject(connection, statement, set);
         }
         return result;
     }
-    public boolean delete(int id) {
-        return dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION_INFO)
-                && dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION);
+
+    public void delete(int id, Connection connection) throws SQLException {
+        dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION_INFO, connection);
+        dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION, connection);
+
     }
 
-    public boolean updateIsAlive(boolean status, int id) {
+    public void updateIsAlive(boolean status, int id) throws SQLException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -148,23 +149,23 @@ public class DirectionDAO {
             statement.setBoolean(index++, status);
             statement.setInt(index, id);
             statement.execute();
-            return true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("cannot update direction status"+status,e);
         } finally {
             dbManager.closeObject(connection, statement);
         }
-        return false;
     }
 
     public List<String> getDistinctDirectionStartCity() {
-        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_START_CITY,DirectionSQLQuery.FIELD_START);
+        return getDistinctDirectionCity(DirectionSQLQuery.SELECT_DIRECTION_DISTINCT_START_CITY, DirectionSQLQuery.FIELD_START);
 
     }
 
     public int getCount() {
         return dbManager.getCount(DirectionSQLQuery.GET_COUNT);
     }
+
     public int getAliveCount() {
         return dbManager.getCount(DirectionSQLQuery.GET_ALIVE_COUNT);
     }

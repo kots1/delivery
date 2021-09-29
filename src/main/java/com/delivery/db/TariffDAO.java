@@ -31,12 +31,10 @@ public class TariffDAO {
     public List<Tariff> getAllAliveTariffWithLimit(int start, int count) {
         return dbManager.getAllElementsWithLimitUsingLocale(new TariffMapper(),TariffSQLQuery.SELECT_ALIVE_TARIFF_LIMIT,start,count);
     }
-    public  boolean insertTariff(Tariff tariff) {
-        Connection connection = null;
+    public  void insertTariff(Connection connection, Tariff tariff) throws SQLException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = dbManager.getConnection();
             statement = connection.prepareStatement(TariffSQLQuery.INSERT_TARIFF, Statement.RETURN_GENERATED_KEYS);
             int index=1;
             statement.setDouble(index++, tariff.getPricePerKm());
@@ -49,34 +47,30 @@ public class TariffDAO {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 tariff.setId(resultSet.getInt(1));
-                return true;
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("Cannot insert tariff",e);
         } finally {
-            dbManager.closeObject(connection, statement, resultSet);
+            dbManager.closeObject( statement, resultSet);
         }
-        return false;
     }
 
-    public boolean insertLocaleTariffName(String locale, String name, Tariff tariff) {
-        Connection connection = null;
+    public void insertLocaleTariffName(Connection connection, String locale, String name, Tariff tariff) throws SQLException {
         PreparedStatement statement = null;
         try {
-            connection = dbManager.getConnection();
             statement = connection.prepareStatement(TariffSQLQuery.INSERT_LOCALE_NAME);
             int index =1;
             statement.setString(index++, locale);
             statement.setInt(index++, tariff.getId());
             statement.setString(index, name);
             statement.execute();
-            return true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("Cannot locale name "+locale+"in tariff",e);
         } finally {
-            dbManager.closeObject(connection, statement);
+            dbManager.closeObject( statement);
         }
-        return false;
     }
 
     public Tariff getTariffById(int id) {
@@ -104,13 +98,12 @@ public class TariffDAO {
         return tariff;
     }
 
-    public boolean delete(int id) {
-        return
-        dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF_NAME)
-        && dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF);
+    public void delete(int id, Connection connection) throws SQLException {
+        dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF_NAME,connection);
+        dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF,connection);
     }
 
-    public boolean updateIsAlive(boolean status, int id) {
+    public void updateIsAlive(boolean status, int id) throws SQLException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -120,13 +113,12 @@ public class TariffDAO {
             statement.setBoolean(index++, status);
             statement.setInt(index, id);
             statement.execute();
-            return true;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            throw new SQLException("cannot update tariff status "+status,e);
         } finally {
             dbManager.closeObject(connection, statement);
         }
-        return false;
     }
 
     public int getCount() {

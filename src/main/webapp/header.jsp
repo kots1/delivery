@@ -39,7 +39,7 @@
                 </div>
             </li>
             <c:if test="${user==null}">
-                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/registration.jsp"><span class="glyphicon glyphicon-user"></span> <fmt:message key="header.singUp" /></a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/registration.jsp"><span class="glyphicon glyphicon-user"></span> <fmt:message key="header.singIn" /></a></li>
                 <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/login.jsp"><span class="glyphicon glyphicon-log-in"></span> <fmt:message key="header.login" /></a></li>
             </c:if>
 

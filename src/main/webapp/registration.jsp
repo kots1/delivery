@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-default"><fmt:message key="registration.input.signUp"/></button>
+          <button type="submit" class="btn btn-default"><fmt:message key="registration.input.signIn"/></button>
         </div>
       </form>
     </div>
