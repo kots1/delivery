@@ -90,8 +90,8 @@ public class TypeBaggageDAO {
         return type;
     }
 
-    public boolean delete(int id) {
-        return dbManager.deleteElement(id,TypeSQLQuery.DELETE_TYPE);
+    public void delete(int id,Connection connection) throws SQLException {
+         dbManager.deleteElement(id,TypeSQLQuery.DELETE_TYPE,connection);
     }
 
     public List<TypeBaggage> getAllTypesWithLimit(int start, int count) {
