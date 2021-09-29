@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
         }
         System.out.println( req.getSession().getId());
         req.getSession().setAttribute("user",user);
-        req.getSession().setAttribute("role", Role.getRole(user).getName());
+        req.getSession().setAttribute("role", Role.getRole(user));
         System.out.println(Role.getRole(user).getName());
         resp.sendRedirect(req.getContextPath()+"/");
     }

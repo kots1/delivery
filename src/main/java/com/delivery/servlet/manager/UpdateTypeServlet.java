@@ -19,6 +19,6 @@ public class UpdateTypeServlet extends HttpServlet {
             req.setAttribute("errorMessage", "cannot delete direction");
             req.getRequestDispatcher("/error.jsp").forward(req, resp);
         }
-        resp.sendRedirect("manager");
+        resp.sendRedirect("manager?part=type");
     }
 }

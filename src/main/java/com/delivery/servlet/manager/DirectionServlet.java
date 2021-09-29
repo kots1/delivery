@@ -15,9 +15,6 @@ import java.util.List;
 @WebServlet("/direction")
 public class DirectionServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +36,7 @@ public class DirectionServlet extends HttpServlet {
                 req.getRequestDispatcher("/error.jsp").forward(req,resp);
             }
         }
-        resp.sendRedirect("manager");
+        resp.sendRedirect("manager?part=direction");
 
     }
 }

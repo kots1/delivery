@@ -20,6 +20,19 @@ public class Order {
     private int house;
     private int apartment;
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", tariff=" + tariff +
+                ", user=" + user +
+                ", direction=" + direction +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", typeBaggage=" + typeBaggage +
+                '}';
+    }
+
     public void setId(int orderId) {
         this.orderId=orderId;
     }

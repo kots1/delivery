@@ -11,15 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
 
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/indexindex.jsp").forward(req,resp);
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,6 +25,11 @@ public class RegistrationServlet extends HttpServlet {
         String password =req.getParameter("password");
         String email =req.getParameter("email");
         String phone =req.getParameter("phone");
+        Map<String, String[]> parameterMap = req.getParameterMap();
+
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            req.setAttribute(entry.getKey(), entry.getValue()[0]);
+        }
         User user;
         try {
             user = Authentication.register(login,name,secondName,password,email,phone);
@@ -37,9 +38,9 @@ public class RegistrationServlet extends HttpServlet {
             System.out.println(Role.getRole(user).getName());
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            req.setAttribute("loginError",throwables.getMessage());
+            req.getRequestDispatcher("/registration.jsp").forward(req,resp);
         }
-        req.setAttribute("login",name);
         resp.sendRedirect(req.getContextPath()+"/");
     }
 }

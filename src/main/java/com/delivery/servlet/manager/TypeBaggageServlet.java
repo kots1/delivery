@@ -21,6 +21,6 @@ public class TypeBaggageServlet extends HttpServlet {
             req.setAttribute("errorMessage","cannot insert type");
             req.getRequestDispatcher("/error.jsp").forward(req,resp);
         }
-        resp.sendRedirect("manager");
+        resp.sendRedirect("manager?part=type");
     }
 }

@@ -26,6 +26,6 @@ public class UpdateTariffServlet extends HttpServlet {
                 req.getRequestDispatcher("/error.jsp").forward(req,resp);
             }
         }
-        resp.sendRedirect("manager");
+        resp.sendRedirect("manager?part=tariff");
     }
 }
