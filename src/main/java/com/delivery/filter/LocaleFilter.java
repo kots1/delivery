@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CookieLocaleFilter implements Filter {
+public class LocaleFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -18,9 +18,8 @@ public class CookieLocaleFilter implements Filter {
 
         if (req.getParameter("lang") != null) {
             String lang= req.getParameter("lang");
+            req.getSession().setAttribute("lang",lang);
             CurrentLocale.setLocale(lang);
-            Cookie cookie = new Cookie("lang", lang);
-            res.addCookie(cookie);
         }
 
         chain.doFilter(request, response);
