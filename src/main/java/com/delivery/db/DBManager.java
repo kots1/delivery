@@ -52,7 +52,7 @@ public class DBManager {
         }
     }
 
-    public<E> List<E> getAllElements(EntityMapper<E> mapper, String query){
+    public<E> List<E> getAllElementsUsingLocale(EntityMapper<E> mapper, String query){
         List<E> result = new ArrayList<>();
         Connection connection=null;
         PreparedStatement statement=null;
@@ -73,6 +73,76 @@ public class DBManager {
         }
         return result;
     }
+    public<E> List<E> getAllElements(EntityMapper<E> mapper, String query){
+        List<E> result = new ArrayList<>();
+        Connection connection=null;
+        Statement statement=null;
+        ResultSet set=null;
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            set= statement.executeQuery(query);
+            while (set.next()){
+                result.add( mapper.mapRow(set));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeObject(connection,statement,set);
+        }
+        return result;
+    }
+
+    public<E> List<E> getAllElementsWithLimitUsingLocale(EntityMapper<E> mapper, String query,int start,int count){
+        List<E> result = new ArrayList<>();
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(query);
+            int index= 1;
+            statement.setString(index++, CurrentLocale.getLocale());
+            statement.setInt(index++, start-1);
+            statement.setInt(index, count);
+            set= statement.executeQuery();
+            while (set.next()){
+                result.add( mapper.mapRow(set));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeObject(connection,statement,set);
+        }
+        return result;
+    }
+
+    public<E> List<E> getAllElementsWithLimit(EntityMapper<E> mapper, String query,int start,int count){
+        List<E> result = new ArrayList<>();
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(query);
+            int index= 1;
+            statement.setInt(index++, start-1);
+            statement.setInt(index, count);
+            set= statement.executeQuery();
+            while (set.next()){
+                result.add( mapper.mapRow(set));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeObject(connection,statement,set);
+        }
+        return result;
+    }
+
     public boolean deleteElement(int id,String query){
         Connection connection = null;
         PreparedStatement statement = null;
@@ -90,4 +160,23 @@ public class DBManager {
         return false;
     }
 
+    public int getCount(String query){
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet set=null;
+        int res = 0;
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            set= statement.executeQuery(query);
+            if (set.next()){
+                res = set.getInt("count");
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            closeObject(connection, statement,set);
+        }
+        return res;
+    }
 }
