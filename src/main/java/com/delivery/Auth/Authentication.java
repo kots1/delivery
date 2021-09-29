@@ -12,8 +12,12 @@ public class Authentication {
 
 
     public static User register(String login, String name, String secondName, String password, String email,String phone) throws SQLException {
+
         String generatedSecuredPasswordHash = PasswordHashing.generatePasswordHash(password);
         User user = User.createUser(login,name,secondName,generatedSecuredPasswordHash,email,phone);
+        if (UserDAO.getInstance().isAlreadyExist(login)){
+            throw new SQLException("user with this login already exist");
+        }
          if (!UserDAO.getInstance().insertUser(user)){
          throw new SQLException();
          }
