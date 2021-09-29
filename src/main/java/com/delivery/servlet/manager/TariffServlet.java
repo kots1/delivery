@@ -1,5 +1,6 @@
 package com.delivery.servlet.manager;
 
+import com.delivery.PaginationBuilder;
 import com.delivery.listener.ConfigListener;
 import com.delivery.db.TariffDAO;
 import com.delivery.entity.Tariff;
@@ -14,9 +15,19 @@ import java.util.List;
 
 @WebServlet("/tariff")
 public class TariffServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String page = req.getParameter("page");
+        PaginationBuilder paginationBuilder;
+        paginationBuilder = new PaginationBuilder(page,TariffDAO.getInstance().getAllAliveTariff().size());
+        paginationBuilder.setCountOnPage(4);
+        List<Tariff> tariffs = TariffDAO.getInstance().getAllTariffWithLimit(paginationBuilder.getStartElement(),paginationBuilder.getCountOnPage());
+        req.setAttribute("tariffs",tariffs);
+        req.setAttribute("noOfPages", paginationBuilder.getNumberOfPages());
+        req.setAttribute("currentPage", paginationBuilder.getPage());
+        req.setAttribute("part",req.getParameter("part"));
+        req.getRequestDispatcher("/tariff.jsp").forward(req, resp);
     }
 
     @Override
@@ -50,6 +61,6 @@ public class TariffServlet extends HttpServlet {
                 req.getRequestDispatcher("/error.jsp").forward(req,resp);
             }
         }
-        resp.sendRedirect("manager");
+        resp.sendRedirect("manager?part=tariff");
     }
 }
