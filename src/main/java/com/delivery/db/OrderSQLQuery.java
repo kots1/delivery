@@ -27,12 +27,17 @@ public class OrderSQLQuery {
             "insert into `order` (id_tariff ,user_id \n" +
                     ",id_direction ,price ,description_of_baggage ,volume ,weight ,street ,house ,apartment,id_type) values(?,?,?,?,?,?,?,?,?,?,?)";
 
-    public static final String  SELECT_ORDER="select * from `order`";
+    public static final String  SELECT_ORDER_LIMIT="select * from `order` order by order_id desc limit ? , ?";
+    public static final String  SELECT_ORDER="select * from `order` order by order_id desc";
     public static final String UPDATE_STATUS = "update `order` set order_status = ? where order_id = ?";
     public static final String DELETE_ORDER = "delete from `order` where order_id = ?";
     public static final String UPDATE_DISPATCH = "update `order` set dispatch_date = ? where order_id = ?";
     public static final String UPDATE_RECEIVING ="update `order` set receiving_date = ? where order_id = ?" ;
-    public static final String SELECT_ORDER_BY_USER_ID = "select * from `order` where user_id = ?";
+    public static final String SELECT_ORDER_BY_USER_ID = "select * from `order` where user_id = ? limit ?,?";
+    public static final String SELECT_ORDER_BY_ID = "select * from `order` where order_id = ?";
+    public static final String GET_COUNT = "select count(*) as 'count' from `order`";
+    public static final String GET_COUNT_BY_USER_ID = "select count(*) as 'count' from `order` where user_id = ?";
+
 
 
 
