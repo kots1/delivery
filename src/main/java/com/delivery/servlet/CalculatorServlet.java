@@ -44,39 +44,14 @@ public class CalculatorServlet extends HttpServlet {
             return;
         }
 
-        Map<String,String[]> parameterMap=req.getParameterMap();
-
-        for (Map.Entry<String,String[]> entry: parameterMap.entrySet()){
+        for (Map.Entry<String,String[]> entry: req.getParameterMap().entrySet()){
             req.setAttribute(entry.getKey(),entry.getValue()[0]);
         }
-
-
-        double weight = Double.parseDouble(req.getParameter("weight"));
-        double volume = Double.parseDouble(req.getParameter("volume"));
-        List<Tariff> tariffs = TariffDAO.getInstance().getAllAliveTariff();
-        List<Direction> directions = DirectionDAO.getInstance().getAllAliveDirection();
-        tariffs = tariffs.stream()
-                .filter(t -> t.getMaxVolume() >= volume && t.getMaxWeight() >= weight)
-                .collect(Collectors.toList());
-        List<TypeBaggage> types = TypeBaggageDAO.getInstance().getAllTypes();
-
-
-        req.setAttribute("tariffs", tariffs);
-        req.setAttribute("directions", directions);
-        req.setAttribute("types",types);
-
-
-
         if (step == 2) {
-            if (req.getParameter("tariff")==null){
-                step=1;
-                req.setAttribute("step", step);
-                req.getRequestDispatcher("/calculator.jsp").forward(req, resp);
-            }
             int directionId = Integer.parseInt(req.getParameter("direction"));
             int tariffId = Integer.parseInt(req.getParameter("tariff"));
             int typeId = Integer.parseInt(req.getParameter("type"));
-            double price = Calculator.calculatePrice(directionId, tariffId,typeId, weight, volume);
+            double price = Calculator.calculatePrice(directionId, tariffId,typeId, Double.parseDouble(req.getParameter("weight")), Double.parseDouble(req.getParameter("volume")));
             Date receivingDate = Calculator.calculateDate(directionId, tariffId);
             SimpleDateFormat dateFormat =new SimpleDateFormat();
             req.setAttribute("price", price);
@@ -84,6 +59,14 @@ public class CalculatorServlet extends HttpServlet {
             req.setAttribute("direction", directionId);
             req.setAttribute("receivingDate", dateFormat.format( receivingDate ) );
         }
+
+        List<Direction> directions = DirectionDAO.getInstance().getAllAliveDirection();
+        List<Tariff> tariffs = TariffDAO.getInstance().getAllAliveWeightVolume(Double.parseDouble(req.getParameter("weight")),Double.parseDouble(req.getParameter("volume")));
+        List<TypeBaggage> types = TypeBaggageDAO.getInstance().getAllTypes();
+
+        req.setAttribute("tariffs", tariffs);
+        req.setAttribute("directions", directions);
+        req.setAttribute("types",types);
         req.setAttribute("step", step);
         req.getRequestDispatcher("/calculator.jsp").forward(req, resp);
     }

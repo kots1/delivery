@@ -3,6 +3,6 @@
         <fmt:message key="create.order.description"/> </h3>
     <hr>
 
-    <input type="text" value="${desc}" class="form-control" name="desc" <c:if test="${step==3}">required</c:if>>
+    <input type="text" value="${desc}" data-error="<fmt:message key="form.shouldInput"/>" class="form-control" name="desc" <c:if test="${step==3}">required</c:if>>
     <div class="help-block with-errors"></div>
 </div>

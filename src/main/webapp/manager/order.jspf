@@ -28,7 +28,7 @@
                 <h5><fmt:message key="order.orderDate"/></h5>
 
 
-                <input type="date" name="orderDate" value="${requestScope.orderDate}">
+                <input type="date" name="orderDate" value="${param.orderDate}">
                 <hr>
                 <input type="text" name="page" value="1" hidden>
                 <input type="submit" value="<fmt:message key="main.filter"/>">
@@ -78,22 +78,26 @@
                                 <c:when test="${order.orderStatus=='processing'}">
                                     <fmt:message key="order.processing"/>
                                     <input type="text" name="status_${order.orderId}" value="unpaid" hidden>
-                                    <input type="submit" value="<fmt:message key="order.receipt"/>" class="btn btn-primary">
+                                    <input type="submit" value="<fmt:message key="order.receipt"/>"
+                                           class="btn btn-primary">
                                 </c:when>
                                 <c:when test="${order.orderStatus=='paid'}">
                                     <fmt:message key="order.paid"/>
                                     <input type="text" name="status_${order.orderId}" value="in the way" hidden>
-                                    <input type="submit" value="<fmt:message key="order.sent"/>" class="btn btn-primary">
+                                    <input type="submit" value="<fmt:message key="order.sent"/>"
+                                           class="btn btn-primary">
                                 </c:when>
                                 <c:when test="${order.orderStatus=='in the way'}">
                                     <fmt:message key="order.way"/>
                                     <input type="text" name="status_${order.orderId}" value="delivered" hidden>
-                                    <input type="submit" value="<fmt:message key="order.delivered"/>" class="btn btn-primary">
+                                    <input type="submit" value="<fmt:message key="order.delivered"/>"
+                                           class="btn btn-primary">
                                 </c:when>
                                 <c:when test="${order.orderStatus=='delivered'}">
                                     <fmt:message key="order.delivered"/>
                                     <input type="text" name="status_${order.orderId}" value="taken" hidden>
-                                    <input type="submit" value="<fmt:message key="order.taken"/>" class="btn btn-primary">
+                                    <input type="submit" value="<fmt:message key="order.taken"/>"
+                                           class="btn btn-primary">
                                 </c:when>
                                 <c:otherwise>
                                     <fmt:message key="order.${order.orderStatus}"/>
@@ -157,23 +161,25 @@
                         </c:if>
                     </nav>
                 </div>
-                <c:if test="${href==null}">
-                    <button type="submit" class="page-link" name="href" value="yes">
-                        <fmt:message key="report.generate"/>
-                    </button>
-                </c:if>
-                <c:if test="${href!=null}">
-                    <a href="report"><fmt:message key="report.download"/> </a>
-                </c:if>
-
-                <input type="text" name="part" value="order" hidden>
-                <c:if test="${orderDate!=null}">
+                <c:if test="${param.orderDate!=null}">
                     <input type="text" name="orderDate" value="${param.orderDate}" hidden>
                 </c:if>
                 <c:forEach items='${paramValues.directionId}' var="direction">
                     <input type="text" name="directionId" value="${direction}" hidden>
                 </c:forEach>
+                <input type="text" name="part" value="order" hidden>
+            </form>
 
+            <form action="report" method="post">
+                <c:if test="${param.orderDate!=null}">
+                    <input type="text" name="orderDate" value="${param.orderDate}" hidden>
+                </c:if>
+                <c:forEach items='${paramValues.directionId}' var="direction">
+                    <input type="text" name="directionId" value="${direction}" hidden>
+                </c:forEach>
+                <button type="submit" class="page-link" >
+                    <fmt:message key="report.generate"/>
+                </button>
             </form>
         </div>
     </div>

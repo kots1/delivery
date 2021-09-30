@@ -15,7 +15,7 @@ public class Calculator {
 
 
     public static double calculatePrice(int directionId, int tariffId,int typeId, double weight, double volume) {
-        double price = 0;
+        double price;
         Tariff tariff = TariffDAO.getInstance().getTariffById(tariffId);
         Direction direction = DirectionDAO.getInstance().getDirectionById(directionId);
         TypeBaggage type = TypeBaggageDAO.getInstance().getTypeById(typeId);

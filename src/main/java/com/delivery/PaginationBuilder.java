@@ -5,6 +5,12 @@ public class PaginationBuilder {
     private int countOnPage=2;
     private int countOfElement;
 
+    public PaginationBuilder(String page) {
+        if (page!=null){
+            this.page = Integer.parseInt(page);
+        }
+    }
+
     public PaginationBuilder(int page, int countOfElement) {
         this.page = page;
         this.countOfElement = countOfElement;

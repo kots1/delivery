@@ -100,19 +100,16 @@ public class OrderDao {
 
     public boolean deleteOrder(int id) {
         Connection connection = null;
-        PreparedStatement statement = null;
         try {
             connection = dbManager.getConnection();
-            statement = connection.prepareStatement(OrderSQLQuery.DELETE_ORDER);
-            statement.setInt(1, id);
-            statement.execute();
-            return true;
+            dbManager.deleteElement(id,OrderSQLQuery.DELETE_ORDER,connection);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            return false;
         } finally {
-            dbManager.closeObject(connection, statement);
+            dbManager.closeObject(connection);
         }
-        return false;
+        return true;
     }
 
     public void updatedDate(int id, String dateName) {

@@ -23,7 +23,7 @@ public class OrderFilterBuilder {
 
     private static String filtering(String orderDate, int[] directionId) {
         StringBuilder filter = new StringBuilder();
-        if (orderDate == null && directionId == null) {
+        if ((orderDate == null||orderDate.equals("")) && directionId == null) {
             return SELECT_DIRECTION_FILTER_START;
         }
         if (directionId != null) {
@@ -32,7 +32,7 @@ public class OrderFilterBuilder {
                             .collect(Collectors.joining(", ")))
                     .append(")");
         }
-        if (orderDate != null ) {
+        if (orderDate != null && !orderDate.equals("")) {
             if (filter.length() != 0) {
                 filter.append(" and ");
             }

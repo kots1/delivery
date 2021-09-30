@@ -25,7 +25,6 @@ public class PageAccessFilter implements Filter {
             chain.doFilter(request, response);
         }
         else {
-            request.setAttribute("errorMessage","cannot find page");
             request.getRequestDispatcher("/error.jsp").forward(request,response);
         }
     }

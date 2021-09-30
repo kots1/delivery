@@ -2,6 +2,7 @@ package com.delivery.db;
 
 public  class UserSQLQuery {
 
+
     private UserSQLQuery() {
     }
     public static final String FIELD_ID="user_id";
@@ -27,5 +28,6 @@ public  class UserSQLQuery {
     public static final String SELECT_USER_BY_LOGIN ="select * from user where login = ?";
 
     public static final String SELECT_USER_BY_ID = "select * from user where user_id = ?";
+    public static final String SELECT_USER_BY_EMAIL = "select * from user where email = ?";
 
 }

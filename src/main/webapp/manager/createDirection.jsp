@@ -21,9 +21,9 @@
             <form data-toggle="validator" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/direction" method="post">
                 <span class="heading"><fmt:message key="create.direction.title" /></span>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="start_en" placeholder="<fmt:message key="create.direction.input.startCity" /> en" required>
+                    <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="start_en" placeholder="<fmt:message key="create.direction.input.startCity" /> en" required>
                     <br>
-                    <input type="text" class="form-control" name="final_en" placeholder="<fmt:message key="create.direction.input.finalCity" /> en" required>
+                    <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="final_en" placeholder="<fmt:message key="create.direction.input.finalCity" /> en" required>
                     <div class="help-block with-errors"></div>
                     <br>
 
@@ -31,16 +31,16 @@
                 <c:forEach var="locale" items="${locales}">
                     <c:if test="${locale!='en'}">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="start_${locale}" placeholder="<fmt:message key="create.direction.input.startCity" /> ${locale}" >
+                            <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="start_${locale}" placeholder="<fmt:message key="create.direction.input.startCity" /> ${locale}" >
                             <br>
-                            <input type="text" class="form-control" name="final_${locale}" placeholder="<fmt:message key="create.direction.input.finalCity" /> ${locale}" >
+                            <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="final_${locale}" placeholder="<fmt:message key="create.direction.input.finalCity" /> ${locale}" >
                         </div>
                         <br>
 
                     </c:if>
                 </c:forEach>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="distance" placeholder="<fmt:message key="create.direction.input.distance" />"  required>
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="distance" placeholder="<fmt:message key="create.direction.input.distance" />"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">

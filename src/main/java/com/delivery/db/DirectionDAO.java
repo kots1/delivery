@@ -2,6 +2,7 @@ package com.delivery.db;
 
 import com.delivery.CurrentLocale;
 import com.delivery.FilterBuilder.DirectionFilterBuilder;
+import com.delivery.Resources;
 import com.delivery.entity.Direction;
 
 import java.sql.*;
@@ -37,7 +38,7 @@ public class DirectionDAO {
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("Cannot insert Direction", e);
+            throw new SQLException(Resources.getValue("error.direction.noInsert"), e);
 
         } finally {
             dbManager.closeObject(statement, resultSet);
@@ -56,7 +57,7 @@ public class DirectionDAO {
             statement.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("Cannot insert locale " + locale + " in direction", e);
+            throw new SQLException(Resources.getValue("error.direction.noInsertInfo") + locale, e);
         } finally {
             dbManager.closeObject(statement);
         }
@@ -134,8 +135,12 @@ public class DirectionDAO {
     }
 
     public void delete(int id, Connection connection) throws SQLException {
-        dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION_INFO, connection);
-        dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION, connection);
+        try {
+            dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION_INFO, connection);
+            dbManager.deleteElement(id, DirectionSQLQuery.DELETE_DIRECTION, connection);
+        }catch (SQLException e){
+            throw new SQLException(Resources.getValue("error.direction.noDelete"),e);
+        }
 
     }
 
@@ -151,7 +156,7 @@ public class DirectionDAO {
             statement.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("cannot update direction status"+status,e);
+            throw new SQLException(Resources.getValue("error.direction.noUpdateStatus")+status,e);
         } finally {
             dbManager.closeObject(connection, statement);
         }

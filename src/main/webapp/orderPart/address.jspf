@@ -5,19 +5,19 @@
 
     <label>
         <fmt:message key="create.order.street"/> </label>
-    <input type="text" value="${street}" class="form-control" name="street"  <c:if test="${step==2}">required</c:if> >
+    <input type="text" value="${street}" class="form-control" name="street" data-error="<fmt:message key="form.shouldInput"/>"  <c:if test="${step==2}">required</c:if> >
     <div class="help-block with-errors"></div>
 </div>
 <div class="form-inline row">
 
     <div class="form-group col-sm-6">
         <label><fmt:message key="create.order.house"/> </label>
-        <input type="number" value="${house}"  min="1" class="form-control" name="house"  <c:if test="${step==2}">required</c:if> >
+        <input type="number" value="${house}"  min="1" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="house"  <c:if test="${step==2}">required</c:if> >
         <div class="help-block with-errors"></div>
     </div>
     <div class="form-group col-sm-6">
         <label><fmt:message key="create.order.apartment"/> </label>
-        <input type="number" value="${apartment}"  min="1" class="form-control" name="apartment"  <c:if test="${step==2}">required</c:if> >
+        <input type="number" value="${apartment}"  min="1" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="apartment"  <c:if test="${step==2}">required</c:if> >
         <div class="help-block with-errors"></div>
     </div>
 </div>

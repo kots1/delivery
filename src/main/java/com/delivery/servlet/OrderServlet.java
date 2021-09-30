@@ -1,11 +1,15 @@
 package com.delivery.servlet;
 
 import com.delivery.Calculator;
+import com.delivery.Resources;
 import com.delivery.db.DirectionDAO;
 import com.delivery.db.OrderDao;
 import com.delivery.db.TariffDAO;
 import com.delivery.db.TypeBaggageDAO;
-import com.delivery.entity.*;
+import com.delivery.entity.Direction;
+import com.delivery.entity.Tariff;
+import com.delivery.entity.TypeBaggage;
+import com.delivery.service.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @WebServlet("/order")
 public class OrderServlet extends HttpServlet {
@@ -39,9 +42,7 @@ public class OrderServlet extends HttpServlet {
             return;
         }
         step = step + Integer.parseInt(act);
-        Map<String, String[]> parameterMap = req.getParameterMap();
-
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+        for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
             req.setAttribute(entry.getKey(), entry.getValue()[0]);
         }
 
@@ -51,62 +52,30 @@ public class OrderServlet extends HttpServlet {
             int directionId = Integer.parseInt(req.getParameter("direction"));
             int typeId = Integer.parseInt(req.getParameter("type"));
             int tariffId = Integer.parseInt(req.getParameter("tariff"));
-            System.out.println(directionId + "+" + tariffId);
             double price = Calculator.calculatePrice(directionId, tariffId, typeId, weight, volume);
             Date receivingDate = Calculator.calculateDate(directionId, tariffId);
-
             SimpleDateFormat dateFormat = new SimpleDateFormat();
+
             req.setAttribute("price", price);
             req.setAttribute("receivingDate", dateFormat.format(receivingDate));
         }
+
         if (step == 5) {
-            int directionId = Integer.parseInt(req.getParameter("direction"));
-            int tariffId = Integer.parseInt(req.getParameter("tariff"));
-            int typeId = Integer.parseInt(req.getParameter("type"));
-
-            Tariff tariff = TariffDAO.getInstance().getTariffById(tariffId);
-            Direction direction = DirectionDAO.getInstance().getDirectionById(directionId);
-            TypeBaggage typeBaggage = TypeBaggageDAO.getInstance().getTypeById(typeId);
-
-            User user = (User) req.getSession().getAttribute("user");
-            Order order = new Order.Builder()
-                    .weight(Double.parseDouble(req.getParameter("weight")))
-                    .user(user)
-                    .apartment(Integer.parseInt(req.getParameter("apartment")))
-                    .house(Integer.parseInt(req.getParameter("house")))
-                    .street(req.getParameter("street"))
-                    .description(req.getParameter("desc"))
-                    .tariff(tariff)
-                    .typeBaggage(typeBaggage)
-                    .direction(direction)
-                    .price(Double.parseDouble(req.getParameter("price")))
-                    .volume(Double.parseDouble(req.getParameter("volume")))
-                    .build();
-            if (!OrderDao.getInstance().insertOrder(order)) {
-                req.setAttribute("loginError", "Даного користувача не існує");
+            if (!OrderDao.getInstance().insertOrder(OrderService.getOrderFromRequestParam(req))) {
+                req.setAttribute("errorMessage", Resources.getValue("error.order.noInsert"));
                 req.getRequestDispatcher("/error.jsp").forward(req, resp);
             }
             resp.sendRedirect(req.getContextPath() + "/successOrder.jsp");
-
             return;
         }
 
-        double weight = Double.parseDouble(req.getParameter("weight"));
-        double volume = Double.parseDouble(req.getParameter("volume"));
-
-
-        List<Tariff> tariffs = TariffDAO.getInstance().getAllAliveTariff();
+        List<Tariff> tariffs = TariffDAO.getInstance().getAllAliveWeightVolume(Double.parseDouble(req.getParameter("weight")), Double.parseDouble(req.getParameter("volume")));
         List<Direction> directions = DirectionDAO.getInstance().getAllAliveDirection();
-        tariffs = tariffs.stream()
-                .filter(t -> t.getMaxVolume() >= volume && t.getMaxWeight() >= weight)
-                .collect(Collectors.toList());
         List<TypeBaggage> types = TypeBaggageDAO.getInstance().getAllTypes();
-
 
         req.setAttribute("tariffs", tariffs);
         req.setAttribute("directions", directions);
         req.setAttribute("types", types);
-
 
         req.setAttribute("step", step);
         req.getRequestDispatcher("/createOrder.jsp").forward(req, resp);

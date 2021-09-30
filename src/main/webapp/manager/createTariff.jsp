@@ -23,45 +23,45 @@
                   action="${pageContext.request.contextPath}/tariff" method="post">
                 <span class="heading"><fmt:message key="create.tariff.title"/></span>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name_en" placeholder="<fmt:message
+                    <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="name_en" placeholder="<fmt:message
                         key="create.tariff.input.name"/>_en" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <c:forEach var="locale" items="${locales}">
                     <c:if test="${locale!='en'}">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="name_${locale}"
+                            <input type="text" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="name_${locale}"
                                    placeholder="<fmt:message key='create.tariff.input.name'/> ${locale}">
                         </div>
                     </c:if>
                 </c:forEach>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="priceKg" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="priceKg" placeholder="<fmt:message
                             key="create.tariff.input.priceKg"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="priceM3" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="priceM3" placeholder="<fmt:message
                                 key="create.tariff.input.priceM3"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="priceKm" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="priceKm" placeholder="<fmt:message
                                     key="create.tariff.input.priceKm"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="maxKg" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="maxKg" placeholder="<fmt:message
                                         key="create.tariff.input.maxKg"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="maxM3" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="maxM3" placeholder="<fmt:message
                                             key="create.tariff.input.maxM3"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" class="form-control" name="time" placeholder="<fmt:message
+                    <input type="number" min="0" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="time" placeholder="<fmt:message
                                                 key="create.tariff.input.time"/>" required>
                     <div class="help-block with-errors"></div>
                 </div>

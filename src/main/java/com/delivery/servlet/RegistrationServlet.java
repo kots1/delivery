@@ -1,6 +1,8 @@
 package com.delivery.servlet;
 
 import com.delivery.Auth.Authentication;
+import com.delivery.Auth.NoUniqueEmailException;
+import com.delivery.Auth.NoUniqueLoginException;
 import com.delivery.entity.Role;
 import com.delivery.entity.User;
 
@@ -25,9 +27,8 @@ public class RegistrationServlet extends HttpServlet {
         String password =req.getParameter("password");
         String email =req.getParameter("email");
         String phone =req.getParameter("phone");
-        Map<String, String[]> parameterMap = req.getParameterMap();
 
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+        for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
             req.setAttribute(entry.getKey(), entry.getValue()[0]);
         }
         User user;
@@ -35,12 +36,18 @@ public class RegistrationServlet extends HttpServlet {
             user = Authentication.register(login,name,secondName,password,email,phone);
             req.getSession().setAttribute("user",user);
             req.getSession().setAttribute("role", Role.getRole(user).getName());
-            System.out.println(Role.getRole(user).getName());
 
-        } catch (SQLException throwables) {
-            req.setAttribute("loginError",throwables.getMessage());
+        } catch (SQLException e) {
+            req.setAttribute("errorMessage",e.getMessage());
+            req.getRequestDispatcher("/error.jsp").forward(req,resp);
+        } catch (NoUniqueLoginException e) {
+            req.setAttribute("loginError",e.getMessage());
+            req.getRequestDispatcher("/registration.jsp").forward(req,resp);
+        } catch (NoUniqueEmailException e) {
+            req.setAttribute("emailError",e.getMessage());
             req.getRequestDispatcher("/registration.jsp").forward(req,resp);
         }
+
         resp.sendRedirect(req.getContextPath()+"/");
     }
 }

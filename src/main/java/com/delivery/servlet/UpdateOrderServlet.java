@@ -1,9 +1,11 @@
 package com.delivery.servlet;
 
 import com.delivery.EmailSend;
+import com.delivery.Resources;
 import com.delivery.db.OrderDao;
 import com.delivery.entity.Order;
 import com.delivery.entity.User;
+import com.delivery.service.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,28 +24,18 @@ public class UpdateOrderServlet extends HttpServlet {
         if (names.hasMoreElements()){
             command = names.nextElement().split("_");
         }
+
         switch (command[0]){
             case "status":
                 String status = req.getParameter(command[0]+"_"+command[1]);
-                if (status.equals("unpaid")){
-                    User user = (User) req.getSession().getAttribute("user");
-                    Order order = OrderDao.getInstance().getOrderById(Integer.parseInt(command[1]));
-                    EmailSend.sendEmail(user.getEmail(),order);
-                }
-                if (status.equals("in the way")){
-                    OrderDao.getInstance().updatedDate(Integer.parseInt(command[1]),"dispatch");
-                }
-                if (status.equals("delivered")){
-                    OrderDao.getInstance().updatedDate(Integer.parseInt(command[1]),"receiving");
-                }
-                if (!OrderDao.getInstance().updateStatus(Integer.parseInt(command[1]),status)){
-                    req.setAttribute("errorMessage","cannot update status");
+                if (!OrderService.updateStatus(status,Integer.parseInt(command[1]), (User) req.getSession().getAttribute("user"))){
+                    req.setAttribute("errorMessage", Resources.getValue("error.order.noStatus"));
                     req.getRequestDispatcher("/error.jsp").forward(req,resp);
                 }
                 break;
             case "delete":
                 if (!OrderDao.getInstance().deleteOrder(Integer.parseInt(command[1]))){
-                    req.setAttribute("errorMessage","cannot delete order");
+                    req.setAttribute("errorMessage",Resources.getValue("error.order.noDelete"));
                     req.getRequestDispatcher("/error.jsp").forward(req,resp);
                 }
                 break;

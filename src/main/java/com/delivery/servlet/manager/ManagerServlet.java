@@ -1,6 +1,6 @@
 package com.delivery.servlet.manager;
 
-import com.delivery.ConvertToPDF;
+import com.delivery.PDFManager;
 import com.delivery.PaginationBuilder;
 import com.delivery.db.DirectionDAO;
 import com.delivery.db.OrderDao;
@@ -18,9 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,70 +25,54 @@ import java.util.stream.Stream;
 public class ManagerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String page = req.getParameter("page");
         String part = req.getParameter("part");
         if (part==null){
             part="order";
         }
-        PaginationBuilder paginationBuilder;
-        switch (part){
+        PaginationBuilder paginationBuilder = new PaginationBuilder(req.getParameter("page"));
+        List<Direction> directions =null;
+        List<Tariff> tariffs=null;
+        List<Order> orders=null;
+        List<TypeBaggage> types= null;
+
+        switch (part) {
             case "direction":
-                paginationBuilder = new PaginationBuilder(page,DirectionDAO.getInstance().getCount());
-                List<Direction> directions = DirectionDAO.getInstance().getAllDirectionWithLimit(paginationBuilder.getStartElement(),paginationBuilder.getCountOnPage());
-                req.setAttribute("directions",directions);
+                paginationBuilder.setCountOfElement(DirectionDAO.getInstance().getCount());
+                directions = DirectionDAO.getInstance().getAllDirectionWithLimit(paginationBuilder.getStartElement(), paginationBuilder.getCountOnPage());
                 break;
             case "tariff":
-                paginationBuilder = new PaginationBuilder(page,TariffDAO.getInstance().getCount());
-                List<Tariff> tariffs = TariffDAO.getInstance().getAllTariffWithLimit(paginationBuilder.getStartElement(),paginationBuilder.getCountOnPage());
-                req.setAttribute("tariffs",tariffs);
+                paginationBuilder.setCountOfElement(TariffDAO.getInstance().getCount());
+                tariffs = TariffDAO.getInstance().getAllTariffWithLimit(paginationBuilder.getStartElement(), paginationBuilder.getCountOnPage());
                 break;
             case "order":
-                List<Direction> direction = DirectionDAO.getInstance().getAllDirection();
-                String chosenDate=req.getParameter("orderDate");
-                int[] directionId=null;
-                if (req.getParameterValues("directionId")!=null) {
-                     directionId = Stream.of(req.getParameterValues("directionId"))
+                directions= DirectionDAO.getInstance().getAllDirection();
+                String chosenDate = req.getParameter("orderDate");
+                int[] directionId = null;
+                if (req.getParameterValues("directionId") != null) {
+                    directionId = Stream.of(req.getParameterValues("directionId"))
                             .mapToInt(Integer::parseInt).toArray();
                 }
-                if (chosenDate==null||chosenDate.isEmpty()){
-                    chosenDate=null;
-                }
-                paginationBuilder = new PaginationBuilder(page,OrderDao.getInstance().getAllOrderWithFilter(chosenDate,directionId).size());
-                List<Order> orders = OrderDao.getInstance().getAllOrderWithFilterWithLimit(chosenDate,directionId,paginationBuilder.getStartElement(),paginationBuilder.getCountOnPage());
-                req.setAttribute("orders",orders);
-                req.setAttribute("orderDate",chosenDate);
-
-                req.setAttribute("directions",direction);
+                paginationBuilder.setCountOfElement(OrderDao.getInstance().getAllOrderWithFilter(chosenDate, directionId).size());
+                orders = OrderDao.getInstance().getAllOrderWithFilterWithLimit(chosenDate, directionId, paginationBuilder.getStartElement(), paginationBuilder.getCountOnPage());
                 break;
             case "type":
-                paginationBuilder = new PaginationBuilder(page,TypeBaggageDAO.getInstance().getCount());
-                List<TypeBaggage> types = TypeBaggageDAO.getInstance().getAllTypesWithLimit(paginationBuilder.getStartElement(),paginationBuilder.getCountOnPage());
-                req.setAttribute("types",types);
+                paginationBuilder.setCountOfElement(TypeBaggageDAO.getInstance().getCount());
+                 types = TypeBaggageDAO.getInstance().getAllTypesWithLimit(paginationBuilder.getStartElement(), paginationBuilder.getCountOnPage());
                 break;
             default:
-                req.setAttribute("errorMessage","cannot find page");
-                req.getRequestDispatcher("/error.jsp").forward(req,resp);
+                req.getRequestDispatcher("/error.jsp").forward(req, resp);
                 return;
         }
 
+        req.setAttribute("types", types);
+        req.setAttribute("orders", orders);
+        req.setAttribute("tariffs", tariffs);
+        req.setAttribute("directions",directions);
         req.setAttribute("noOfPages", paginationBuilder.getNumberOfPages());
         req.setAttribute("currentPage", paginationBuilder.getPage());
         req.setAttribute("part",part);
 
-        if (req.getParameter("href")!=null){
-            ServletContext context = req.getSession().getServletContext();
 
-            String path = context.getRealPath("report.pdf");
-            String chosenDate=req.getParameter("orderDate");
-            int[] directionId=null;
-            if (req.getParameterValues("directions")!=null) {
-                directionId = Stream.of(req.getParameterValues("directions"))
-                        .mapToInt(Integer::parseInt).toArray();
-            }
-            List<Order> orderList = OrderDao.getInstance().getAllOrderWithFilter(chosenDate,directionId);
-            ConvertToPDF.generatePDF(path,orderList);
-            req.setAttribute("href", path);
-        }
         req.getRequestDispatcher("/manager/manager.jsp").forward(req,resp);
     }
 }

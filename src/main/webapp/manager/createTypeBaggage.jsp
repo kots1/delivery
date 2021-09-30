@@ -21,11 +21,11 @@
             <form data-toggle="validator" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/typeBaggage" method="post">
                 <span class="heading"><fmt:message key="create.type.title"/></span>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="type" placeholder="<fmt:message key="create.type.input.type"/>"  required>
+                    <input type="text" class="form-control" name="type" data-error="<fmt:message key="form.shouldInput"/>" placeholder="<fmt:message key="create.type.input.type"/>"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">
-                    <input type="number" min="0" step="0.001" class="form-control" name="coefficient" placeholder="<fmt:message key="create.type.input.coefficient"/>"  required>
+                    <input type="number" min="0" step="0.001" class="form-control" data-error="<fmt:message key="form.shouldInput"/>" name="coefficient" placeholder="<fmt:message key="create.type.input.coefficient"/>"  required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group">

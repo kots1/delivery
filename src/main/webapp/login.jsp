@@ -23,12 +23,12 @@
                 <form data-toggle="validator" class="form-horizontal" action="login" method="post">
                     <span class="heading"><fmt:message key="login.authorization" /></span>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="inputEmail"   placeholder="<fmt:message key="user.login" />" name="login" required>
+                        <input type="text" class="form-control" id="inputEmail" data-error="<fmt:message key="form.shouldInput"/>"  placeholder="<fmt:message key="user.login" />" name="login" required>
                         <i class="fa fa-user"></i>
                         <span class="help-block with-errors">${loginError}</span>
                     </div>
                     <div class="form-group help">
-                        <input type="password" class="form-control" id="inputPassword" placeholder="<fmt:message key="login.password" />" name="password" required>
+                        <input type="password" class="form-control" id="inputPassword" data-error="<fmt:message key="form.shouldInput"/>" placeholder="<fmt:message key="login.password" />" name="password" required>
                         <i class="fa fa-lock"></i>
                         <span class="help-block with-errors">${passwordError}</span>
                     </div>

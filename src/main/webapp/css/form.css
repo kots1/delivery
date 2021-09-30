@@ -1,6 +1,9 @@
 .update{
     display: none;
 }
+.with-errors{
+    color: red;
+}
 .form-horizontal{
     background: #fff;
     padding-bottom: 40px;

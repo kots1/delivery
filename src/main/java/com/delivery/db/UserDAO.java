@@ -97,7 +97,7 @@ public class UserDAO {
         return user;
     }
 
-    public boolean isAlreadyExist(String login) {
+    public boolean isLoginExist(String login) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet set = null;
@@ -105,6 +105,26 @@ public class UserDAO {
             connection = dbManager.getConnection();
             statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_LOGIN);
             statement.setString(1, login);
+            set = statement.executeQuery();
+            if (set.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            dbManager.closeObject(connection, statement, set);
+        }
+        return false;
+    }
+
+    public boolean isEmailExist(String email) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(UserSQLQuery.SELECT_USER_BY_EMAIL);
+            statement.setString(1, email);
             set = statement.executeQuery();
             if (set.next()) {
                 return true;

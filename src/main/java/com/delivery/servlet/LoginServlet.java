@@ -2,6 +2,7 @@ package com.delivery.servlet;
 
 import com.delivery.Auth.Authentication;
 import com.delivery.Auth.IllegalPasswordException;
+import com.delivery.Resources;
 import com.delivery.entity.Role;
 import com.delivery.entity.User;
 
@@ -20,17 +21,19 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = null;
+
+        User user ;
         try {
             user = Authentication.login(login,password);
             if (user==null){
-                req.setAttribute("loginError","Даного користувача не існує");
+                req.setAttribute("loginError", Resources.getValue("login.noUser"));
                 req.getRequestDispatcher("/login.jsp").forward(req,resp);
                 return;
             }
         }catch (IllegalPasswordException e){
-            req.setAttribute("passwordError","Пароль не правильний");
+            req.setAttribute("passwordError",e.getMessage());
             req.getRequestDispatcher("/login.jsp").forward(req,resp);
+            return;
         }
         System.out.println( req.getSession().getId());
         req.getSession().setAttribute("user",user);

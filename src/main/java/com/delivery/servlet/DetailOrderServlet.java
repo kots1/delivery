@@ -23,7 +23,7 @@ public class DetailOrderServlet extends HttpServlet {
         int orderId = Integer.parseInt(req.getParameter("orderId"));
         Order order = OrderDao.getInstance().getOrderById(orderId);
         User user = (User) req.getSession().getAttribute("user");
-        if (order.getUser().getId() != user.getId() && Role.getRole(user)!=Role.MANAGER) {
+        if (user==null || (order.getUser().getId() != user.getId() && Role.getRole(user)!=Role.MANAGER)) {
             resp.sendRedirect(req.getContextPath()+"/error.jsp");
             return;
         }

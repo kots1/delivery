@@ -1,9 +1,11 @@
 package com.delivery.db;
 
 import com.delivery.CurrentLocale;
+import com.delivery.Resources;
 import com.delivery.entity.Tariff;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TariffDAO {
@@ -50,7 +52,7 @@ public class TariffDAO {
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("Cannot insert tariff",e);
+            throw new SQLException(Resources.getValue("error.tariff.noInsert"),e);
         } finally {
             dbManager.closeObject( statement, resultSet);
         }
@@ -67,7 +69,7 @@ public class TariffDAO {
             statement.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("Cannot locale name "+locale+"in tariff",e);
+            throw new SQLException(Resources.getValue("error.tariff.noInsertInfo")+locale,e);
         } finally {
             dbManager.closeObject( statement);
         }
@@ -99,8 +101,13 @@ public class TariffDAO {
     }
 
     public void delete(int id, Connection connection) throws SQLException {
-        dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF_NAME,connection);
-        dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF,connection);
+        try {
+            dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF_NAME,connection);
+            dbManager.deleteElement(id,TariffSQLQuery.DELETE_TARIFF,connection);
+        }catch (SQLException e){
+            throw new SQLException(Resources.getValue("error.tariff.noDelete"),e);
+        }
+
     }
 
     public void updateIsAlive(boolean status, int id) throws SQLException {
@@ -115,7 +122,7 @@ public class TariffDAO {
             statement.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new SQLException("cannot update tariff status "+status,e);
+            throw new SQLException(Resources.getValue("error.tariff.noUpdateStatus")+status,e);
         } finally {
             dbManager.closeObject(connection, statement);
         }
@@ -123,6 +130,31 @@ public class TariffDAO {
 
     public int getCount() {
         return dbManager.getCount(TariffSQLQuery.GET_COUNT);
+    }
+
+    public List<Tariff> getAllAliveWeightVolume(double weight, double volume) {
+        List<Tariff> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet set = null;
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.prepareStatement(TariffSQLQuery.SELECT_ALIVE_TARIFF_WHERE_VOLUME_WEIGHT);
+            int index = 1;
+            statement.setString(index++, CurrentLocale.getLocale());
+            statement.setDouble(index++, weight);
+            statement.setDouble(index, volume);
+            set = statement.executeQuery();
+            TariffMapper mapper = new TariffMapper();
+            while (set.next()) {
+                result.add(mapper.mapRow(set));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dbManager.closeObject(connection, statement, set);
+        }
+        return result;
     }
 
 

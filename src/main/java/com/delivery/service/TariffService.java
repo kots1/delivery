@@ -40,7 +40,7 @@ public class TariffService {
         } catch (SQLException e) {
             e.printStackTrace();
             dbManager.rollbackAndClose(connection);
-            throw new SQLException("cannot delete tariff",e);
+            throw new SQLException(e.getMessage());
         }
         dbManager.commitAndClose(connection);
     }

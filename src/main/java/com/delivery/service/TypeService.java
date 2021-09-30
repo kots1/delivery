@@ -1,5 +1,6 @@
 package com.delivery.service;
 
+import com.delivery.Resources;
 import com.delivery.db.DBManager;
 import com.delivery.db.TypeBaggageDAO;
 
@@ -18,7 +19,7 @@ public class TypeService {
         } catch (SQLException e) {
             e.printStackTrace();
             dbManager.rollbackAndClose(connection);
-            throw new SQLException("cannot delete type", e);
+            throw new SQLException(Resources.getValue("error.type.noDelete"), e);
         }
         dbManager.commitAndClose(connection);
     }
